@@ -73,7 +73,7 @@ Game.prototype.getPlayerPositions = function(color){
 	return pieces.map( a => parseInt(a.position));
 }
 
-Game.prototype.filter_positions = function(positions) {
+Game.prototype.filterPositions = function(positions) {
 	return positions.filter(pos => {
 		return pos > 10 && pos < 89
 	});
@@ -92,7 +92,7 @@ Game.prototype.unblockedPositions = function(allowedPositions=[], position, colo
 		var otherBlockedPositions = this.getPlayerPositions('white');
 	}
 	
-	if (this.clickedPiece.rank == 'pawn') {
+	if (this.clickedPiece.hasRank('pawn')) {
 		for (var i = 0; i < allowedPositions[0].length; i++) { //attacking moves
 			var move = allowedPositions[0][i];
 			if (checking && this.my_king_checked(move)) {
@@ -122,7 +122,7 @@ Game.prototype.unblockedPositions = function(allowedPositions=[], position, colo
 				if (myBlockedPositions.indexOf(move) != -1) {
 					break;
 				}
-				else if (this.clickedPiece.rank == 'king' && this.clickedPiece.position - move == 2) {
+				else if (this.clickedPiece.hasRank('king') && this.clickedPiece.position - move == 2) {
 					continue;
 				}
 				else if (checking && this.my_king_checked(move)) {
@@ -136,9 +136,8 @@ Game.prototype.unblockedPositions = function(allowedPositions=[], position, colo
 		}
 	}
 		
-	return unblockedPositions;
+	return this.filterPositions(unblockedPositions);
 }
-
 
 Game.prototype.getPieceAllowedMoves = function(event, pieceName){
 	var piece = this.getPieceByName(pieceName);
@@ -183,7 +182,7 @@ Game.prototype.movePiece = function(event, square=''){
 		var clickedPiece = this.clickedPiece;
 		if (clickedPiece) {
 			var newPosition = square.getAttribute('id');
-			if (clickedPiece.rank == 'king' || clickedPiece.rank == 'pawn')
+			if (clickedPiece.hasRank('king') || clickedPiece.hasRank('pawn'))
 				clickedPiece.changePosition(newPosition, true);
 			else
 				clickedPiece.changePosition(newPosition);
@@ -260,7 +259,6 @@ Game.prototype.my_king_checked = function(pos, kill=true){
 	}
 }
 
-
 Game.prototype.king_dead = function(color){
 	var pieces = this.getPiecesByColor(color);
 	for (var i = 0; i < pieces.length; i++) {
@@ -268,7 +266,6 @@ Game.prototype.king_dead = function(color){
 		this.setClickedPiece(piece);
 		var allowedMoves = piece.getAllowedMoves();
 		allowedMoves = this.unblockedPositions(allowedMoves, piece.position, piece.color, true);
-		allowedMoves = this.filter_positions(allowedMoves);
 		if (allowedMoves.length) {
 			this.setClickedPiece(null);
 			return 0;
@@ -284,16 +281,16 @@ Game.prototype.king_checked = function(color){
 	var enemyColor = (color == 'white') ? 'black' : 'white';
 	enemyPieces = this.getPiecesByColor(enemyColor);
 	for (var i = 0; i < enemyPieces.length; i++) {
-		this.clickedPiece = enemyPieces[i];
+		this.setClickedPiece(enemyPieces[i]);
 		var allowedMoves = enemyPieces[i].getAllowedMoves();
 		allowedMoves = this.unblockedPositions(allowedMoves, enemyPieces[i].position, enemyColor, false);
 		if (allowedMoves.indexOf(king.position) != -1) {
-			this.clickedPiece = piece;
+			this.setClickedPiece(piece);
 			king.remove_castling_ability();
 			return 1;
 		}
 	}
-	this.clickedPiece = piece;
+	this.setClickedPiece(piece);
 	return 0;
 }
 

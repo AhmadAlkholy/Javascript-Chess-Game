@@ -7,13 +7,9 @@ function Piece(position, rank, name){
 	this.img      = document.getElementById(this.name);
 }
 
-Piece.prototype.canJump = function(){
-	return this.canJump;
+Piece.prototype.hasRank = function(rank){
+	return this.rank == rank;
 }
-
-Piece.prototype.getAllowedMoves = function() {
-	
-};
 
 Piece.prototype.changePosition = function(position){
 	this.position = parseInt(position);
