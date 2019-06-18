@@ -151,3 +151,12 @@ img{
 .winning-sign:first-letter{
 	text-transform: uppercase;
 }
+
+.flip-board{
+	padding: 10px 20px;
+    border-radius: 5px !important;
+    outline: 0;
+    background: #7f979e;
+    color: white;
+    border: 0;
+}
