@@ -30,7 +30,6 @@ Game.prototype.addEventListeners = function(){
 Game.prototype.pieceMove = function(event){
 	var clickedPiece = this.clickedPiece;
 	var name = event.target.getAttribute('id');
-	if (this) {}
 	allowedMoves = this.getPieceAllowedMoves(event, name);
 	if (allowedMoves) {
 		position = this.getPieceByName(name).position;
