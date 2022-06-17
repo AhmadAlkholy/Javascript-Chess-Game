@@ -110,10 +110,7 @@ class Game {
 					if (myBlockedPositions.indexOf(move) != -1) {
 						break;
 					}
-					else if (
-							(this.clickedPiece.hasRank('king') && this.clickedPiece.position - move == 2) ||
-							checking && this.my_king_checked(move)
-						) {
+					else if ( checking && this.my_king_checked(move) ) {
 						continue;
 					}
 					unblockedPositions.push(move);
@@ -183,7 +180,7 @@ class Game {
 				return 0;
 			}
 		}
-		event.preventDefault();
+		if (event) event.preventDefault();
 	}
 
 	kill(piece) {
@@ -200,7 +197,7 @@ class Game {
 
 	castleRook(rookName) {
 		const rook = this.getPieceByName(rookName);
-		const newPosition = rookName.indexOf('Rook2') != -1 ? rook.position - 2 : rook.position + 2;
+		const newPosition = rookName.indexOf('Rook2') != -1 ? rook.position - 2 : rook.position + 3;
 
 		this.setClickedPiece(rook);
 		const chosenSquare = document.getElementById(newPosition);
