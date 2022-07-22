@@ -94,13 +94,13 @@ class Game {
 		
 		if (this.clickedPiece.hasRank('pawn')) {
 			for (const move of allowedPositions[0]) { //attacking moves
-				if (checking && this.my_king_checked(move)) continue;
+				if (checking && this.myKingChecked(move)) continue;
 				if (otherBlockedPositions.indexOf(move) != -1) unblockedPositions.push(move);
 			}
 			const blockedPositions = myBlockedPositions + otherBlockedPositions;
 			for (const move of allowedPositions[1]) { //moving moves
 				if (blockedPositions.indexOf(move) != -1) break;
-				else if (checking && this.my_king_checked(move, false)) continue;
+				else if (checking && this.myKingChecked(move, false)) continue;
 				unblockedPositions.push(move);
 			}
 		}
@@ -110,7 +110,7 @@ class Game {
 					if (myBlockedPositions.indexOf(move) != -1) {
 						break;
 					}
-					else if ( checking && this.my_king_checked(move) ) {
+					else if ( checking && this.myKingChecked(move) ) {
 						continue;
 					}
 					unblockedPositions.push(move);
@@ -130,7 +130,13 @@ class Game {
 			if (event.type == 'dragstart') {
 				event.dataTransfer.setData("text", event.target.id);
 			}
-			const allowedMoves = this.unblockedPositions( piece.getAllowedMoves(), piece.position, piece.color, true );
+
+			let pieceAllowedMoves = piece.getAllowedMoves();
+			if (piece.rank == 'king') {
+				pieceAllowedMoves = this.getCastlingSquares(pieceAllowedMoves);
+			}
+
+			const allowedMoves = this.unblockedPositions( pieceAllowedMoves, piece.position, piece.color, true );
 			this.allowedMoves = allowedMoves;
 			return allowedMoves;
 		}
@@ -142,12 +148,40 @@ class Game {
 		}
 	}
 
+	getCastlingSquares(allowedMoves) {
+		if ( !this.clickedPiece.ableToCastle || this.king_checked(this.turn) ) return allowedMoves;
+		const rook1 = this.getPieceByName(this.turn+'Rook1');
+		const rook2 = this.getPieceByName(this.turn+'Rook2');
+		if (rook1 && rook1.ableToCastle) {
+			const castlingPosition = rook1.position + 2
+            if(
+                !this.positionHasExistingPiece(castlingPosition - 1) &&
+                !this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true) &&
+                !this.positionHasExistingPiece(castlingPosition + 1) && !this.myKingChecked(castlingPosition + 1, true)
+            )
+			allowedMoves[1].push(castlingPosition);
+		}
+		if (rook2 && rook2.ableToCastle) {
+			const castlingPosition = rook2.position - 1;
+			if(
+                !this.positionHasExistingPiece(castlingPosition - 1) && !this.myKingChecked(castlingPosition - 1, true) &&
+                !this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true)
+            )
+			allowedMoves[0].push(castlingPosition);
+		}
+		return allowedMoves;
+	}
+
 	getPieceByName(piecename) {
 		return this.pieces.filter( obj => obj.name === piecename )[0];
 	}
 
 	getPieceByPos(piecePosition) {
 		return this.pieces.filter(obj =>  obj.position === piecePosition )[0];
+	}
+
+	positionHasExistingPiece(position) {
+		return this.getPieceByPos(position) != undefined;
 	}
 
 	setClickedPiece(piece) {
@@ -216,7 +250,7 @@ class Game {
 		this.pieces.push( new Queen(pawn.position, queenName) );
 	}
 
-	my_king_checked(pos, kill=true){
+	myKingChecked(pos, kill=true){
 		const piece = this.clickedPiece;
 		const originalPosition = piece.position;
 		const otherPiece = this.getPieceByPos(pos);
