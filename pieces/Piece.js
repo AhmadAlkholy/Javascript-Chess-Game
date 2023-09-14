@@ -4,7 +4,6 @@ class Piece {
 		this.rank     = rank;
 		this.name     = name;
 		this.color    = this.name.substring(0,5);
-		this.img      = document.getElementById(this.name);
 	}
 
 
@@ -14,6 +13,10 @@ class Piece {
 
 	changePosition(position) {
 		this.position = parseInt(position);
+	}
+
+	getAllowedMoves() {
+		return [];
 	}
 
 	getMovesTop() {

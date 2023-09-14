@@ -7,5 +7,3 @@ class Bishop extends Piece {
 		return [ this.getMovesTopRight(), this.getMovesTopLeft(), this.getMovesBottomRight(), this.getMovesBottomLeft() ];
 	}
 }
-
-exports = Bishop;
