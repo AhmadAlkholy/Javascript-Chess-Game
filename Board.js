@@ -4,6 +4,19 @@ const startBoard = game => {
     const whiteSematary = document.getElementById('whiteSematary');
     const blackSematary = document.getElementById('blackSematary');
     const turnSign = document.getElementById('turn');
+    
+    const resetBoard = () => {
+        for (const square of squares) {
+            square.innerHTML = '';
+        }
+
+        for (const piece of game.pieces) {
+            const square = document.getElementById(piece.position);
+            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.png">`
+        }
+    }
+
+    resetBoard();
 
     const setAllowedSquares = (pieceImg) => {
         const pieceName = pieceImg.id;
