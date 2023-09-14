@@ -46,10 +46,10 @@ class Game {
 		});
 	};
 
-	unblockedPositions(allowedPositions=[], color, checking=true) {
+	unblockedPositions(piece, allowedPositions, checking=true) {
 		const unblockedPositions = [];
 
-		if (color === 'white') {
+		if (piece.color === 'white') {
 			var myBlockedPositions    = this.getPlayerPositions('white');
 			var otherBlockedPositions = this.getPlayerPositions('black');
 		}
@@ -58,7 +58,7 @@ class Game {
 			var otherBlockedPositions = this.getPlayerPositions('white');
 		}
 
-		if (this.clickedPiece.hasRank('pawn')) {
+		if (piece.hasRank('pawn')) {
 			for (const move of allowedPositions[0]) { //attacking moves
 				if (checking && this.myKingChecked(move)) continue;
 				if (otherBlockedPositions.indexOf(move) !== -1) unblockedPositions.push(move);
@@ -103,21 +103,18 @@ class Game {
 
 			let pieceAllowedMoves = piece.getAllowedMoves();
 			if (piece.rank === 'king') {
-				pieceAllowedMoves = this.getCastlingSquares(pieceAllowedMoves);
+				pieceAllowedMoves = this.getCastlingSquares(piece, pieceAllowedMoves);
 			}
 
-			return this.unblockedPositions( pieceAllowedMoves, piece.color, true );
-		}/*
-		else if (this.clickedPiece && this.turn == this.clickedPiece.color && allowedMoves && allowedMoves.indexOf(piece.position) != -1) {
-			this.kill(piece);
-		}*/
+			return this.unblockedPositions(piece, pieceAllowedMoves, true);
+		}
 		else{
 			return [];
 		}
 	}
 
-	getCastlingSquares(allowedMoves) {
-		if ( !this.clickedPiece.ableToCastle || this.king_checked(this.turn) ) return allowedMoves;
+	getCastlingSquares(king, allowedMoves) {
+		if ( !king.ableToCastle || this.king_checked(this.turn) ) return allowedMoves;
 		const rook1 = this.getPieceByName(this.turn+'Rook1');
 		const rook2 = this.getPieceByName(this.turn+'Rook2');
 		if (rook1 && rook1.ableToCastle) {
@@ -164,35 +161,35 @@ class Game {
 		}
 	}
 
-	movePiece(position) {
-		const clickedPiece = this.clickedPiece;
-		const prevPosition = clickedPiece.position;
+	movePiece(pieceName, position) {
+		const piece = this.getPieceByName(pieceName);
+		const prevPosition = piece.position;
 		position = parseInt(position);
 
-		if (clickedPiece && this.getPieceAllowedMoves(clickedPiece.name).indexOf(position) !== -1) {
+		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
 			const existedPiece = this.getPieceByPos(position)
 
 			if (existedPiece) {
 				this.kill(existedPiece);
 			}
 
-			if (!existedPiece && clickedPiece.hasRank('king') && clickedPiece.ableToCastle === true) {
+			if (!existedPiece && piece.hasRank('king') && piece.ableToCastle === true) {
 				if (position - prevPosition === 2) {
-					this.castleRook(clickedPiece.color + 'Rook2');
+					this.castleRook(piece.color + 'Rook2');
 				}
 				else if (position - prevPosition === -2) {
-					this.castleRook(clickedPiece.color + 'Rook1');
+					this.castleRook(piece.color + 'Rook1');
 				}
-				clickedPiece.changePosition(position, true);
+				piece.changePosition(position, true);
 			}
 			else {
-				clickedPiece.changePosition(position);
+				piece.changePosition(position);
 			}
 
-			this.triggerEvent('pieceMove', clickedPiece);
+			this.triggerEvent('pieceMove', piece);
 
-			if (clickedPiece.rank === 'pawn' && (position > 80 || position < 20)) {
-				this.promote(clickedPiece);
+			if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
+				this.promote(piece);
 			}
 
 			this.changeTurn();
@@ -201,7 +198,7 @@ class Game {
 				this.triggerEvent('check', this.turn);
 
 				if (this.king_dead(this.turn)) {
-					this.checkmate(clickedPiece.color);
+					this.checkmate(piece.color);
 				}
 				else{
 					// alert('check');
@@ -218,7 +215,6 @@ class Game {
 	kill(piece) {
 		this.pieces.splice(this.pieces.indexOf(piece), 1);
 		this.triggerEvent('kill', piece);
-		// this.movePiece(chosenSquare);
 	}
 
 	castleRook(rookName) {
@@ -227,7 +223,7 @@ class Game {
 
 		this.setClickedPiece(rook);
 
-		this.movePiece(newPosition);
+		this.movePiece(rookName, newPosition);
 		this.triggerEvent('pieceMove', rook);
 		this.changeTurn();
 	}
@@ -265,7 +261,7 @@ class Game {
 		const pieces = this.getPiecesByColor(color);
 		for (const piece of pieces) {
 			this.setClickedPiece(piece);
-			const allowedMoves = this.unblockedPositions( piece.getAllowedMoves(), piece.color, true );
+			const allowedMoves = this.unblockedPositions(piece, piece.getAllowedMoves(), true);
 			if (allowedMoves.length) {
 				this.setClickedPiece(null);
 				return 0;
@@ -282,7 +278,7 @@ class Game {
 		const enemyPieces = this.getPiecesByColor(enemyColor);
 		for (const enemyPiece of enemyPieces) {
 			this.setClickedPiece(enemyPiece);
-			const allowedMoves = this.unblockedPositions( enemyPiece.getAllowedMoves(), enemyColor, false );
+			const allowedMoves = this.unblockedPositions(enemyPiece, enemyPiece.getAllowedMoves(), false);
 			if (allowedMoves.indexOf(king.position) !== -1) {
 				this.setClickedPiece(piece);
 				return 1;

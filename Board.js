@@ -4,7 +4,8 @@ const startBoard = game => {
     const whiteSematary = document.getElementById('whiteSematary');
     const blackSematary = document.getElementById('blackSematary');
     const turnSign = document.getElementById('turn');
-    
+    let clickedPieceName;
+
     const resetBoard = () => {
         for (const square of squares) {
             square.innerHTML = '';
@@ -19,8 +20,8 @@ const startBoard = game => {
     resetBoard();
 
     const setAllowedSquares = (pieceImg) => {
-        const pieceName = pieceImg.id;
-        const allowedMoves = game.getPieceAllowedMoves(pieceName);
+        clickedPieceName = pieceImg.id;
+        const allowedMoves = game.getPieceAllowedMoves(clickedPieceName);
         if (allowedMoves) {
             const clickedSquare = pieceImg.parentNode;
             clickedSquare.classList.add('clicked-square');
@@ -55,7 +56,7 @@ const startBoard = game => {
             return setAllowedSquares(pieceImg);
         }
 
-        game.movePiece(position);
+        game.movePiece(clickedPieceName, position);
     }
 
     squares.forEach( square => {
