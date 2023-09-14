@@ -32,8 +32,7 @@ const startBoard = game => {
         }
     }
 
-    function movePiece() {
-        const square = this;
+    function movePiece(square) {
         const position = square.getAttribute('id');
         const existedPiece = game.getPieceByPos(position);
 
@@ -47,11 +46,23 @@ const startBoard = game => {
     }
 
     squares.forEach( square => {
-        square.addEventListener("click", movePiece);
+        square.addEventListener("click", function () {
+            movePiece(this);
+        });
         square.addEventListener("dragover", function(event){
             event.preventDefault();
         });
-        square.addEventListener("drop", movePiece);
+        square.addEventListener("drop", function () {
+            movePiece(this);
+        });
+    });
+
+    pieces.forEach( piece => {
+        const pieceImg = document.getElementById(piece.name);
+        pieceImg.addEventListener("drop", function () {
+            const square = document.getElementById(piece.position);
+            movePiece(square);
+        });
     });
 
     document.querySelectorAll('img.piece').forEach( pieceImg => {
