@@ -1,7 +1,11 @@
 class Game {
-	constructor(pieces) {
-		this.pieces  = pieces;
-		this.turn    = 'white';
+	constructor(pieces, turn) {
+		this.startNewGame(pieces, turn);
+	}
+
+	startNewGame(pieces, turn) {
+		this.pieces = pieces.map( piece =>  new piece.constructor(piece.position, piece.name) );
+		this.turn = turn;
 		this.clickedPiece = null;
 		this._events = {
 			pieceMove: [],
@@ -36,7 +40,7 @@ class Game {
 
 	getPlayerPositions(color){
 		const pieces = this.getPiecesByColor(color);
-		return pieces.map( a => parseInt(a.position));
+		return pieces.map(a => a.position);
 	}
 
 	filterPositions(positions) {
@@ -138,11 +142,19 @@ class Game {
 	}
 
 	getPieceByName(piecename) {
-		return this.pieces.filter( obj => obj.name === piecename )[0];
+		for (const piece of this.pieces) {
+			if (piece.name === piecename) {
+				return piece;
+			}
+		}
 	}
 
-	getPieceByPos(piecePosition) {
-		return this.pieces.filter(obj =>  obj.position == piecePosition )[0];
+	getPieceByPos(position) {
+		for (const piece of this.pieces) {
+			if (piece.position == position) {
+				return piece;
+			}
+		}
 	}
 
 	positionHasExistingPiece(position) {
@@ -163,10 +175,12 @@ class Game {
 
 	movePiece(pieceName, position) {
 		const piece = this.getPieceByName(pieceName);
-		const prevPosition = piece.position;
+
 		position = parseInt(position);
 
 		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
+			const prevPosition = piece.position;
+			
 			const existedPiece = this.getPieceByPos(position)
 
 			if (existedPiece) {
