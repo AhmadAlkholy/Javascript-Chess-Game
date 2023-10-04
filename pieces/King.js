@@ -20,9 +20,10 @@ class King extends Piece {
 	}
 
 	changePosition(position, castle=false) {
+		super.changePosition(position);
+
 		if (castle) {
 			this.ableToCastle = false;
 		}
-		this.position = parseInt(position);
 	}
 }
