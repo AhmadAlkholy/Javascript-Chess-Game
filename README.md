@@ -1,1 +1,1 @@
-Play it from here: https://elchipaxd.github.io/Javascript-Chess-Game/
+Play it from here: https://elchipaxd.github.io/Javascript-Chess-Game/chess.html
