@@ -1,7 +1,7 @@
 class Game {
 	constructor(pieces) {
-		this.pieces  = pieces;
-		this.turn    = 'white';
+		this.pieces = pieces;
+		this.turn = 'white';
 		this.clickedPiece = null;
 		this._events = {
 			pieceMove: [],
@@ -17,7 +17,7 @@ class Game {
 		this._events = {};
 	}
 
-	on (eventName, callback) {
+	on(eventName, callback) {
 		if (this._events[eventName] && typeof callback === 'function') {
 			this._events[eventName].push(callback);
 		}
@@ -30,13 +30,13 @@ class Game {
 
 	getPiecesByColor(color) {
 		return this.pieces.filter(obj => {
-		  return obj.color === color
+			return obj.color === color
 		});
 	}
 
-	getPlayerPositions(color){
+	getPlayerPositions(color) {
 		const pieces = this.getPiecesByColor(color);
-		return pieces.map( a => parseInt(a.position));
+		return pieces.map(a => parseInt(a.position));
 	}
 
 	filterPositions(positions) {
@@ -46,15 +46,15 @@ class Game {
 		});
 	};
 
-	unblockedPositions(piece, allowedPositions, checking=true) {
+	unblockedPositions(piece, allowedPositions, checking = true) {
 		const unblockedPositions = [];
 
 		if (piece.color === 'white') {
-			var myBlockedPositions    = this.getPlayerPositions('white');
+			var myBlockedPositions = this.getPlayerPositions('white');
 			var otherBlockedPositions = this.getPlayerPositions('black');
 		}
-		else{
-			var myBlockedPositions    = this.getPlayerPositions('black');
+		else {
+			var myBlockedPositions = this.getPlayerPositions('black');
 			var otherBlockedPositions = this.getPlayerPositions('white');
 		}
 
@@ -72,13 +72,13 @@ class Game {
 				unblockedPositions.push(move);
 			}
 		}
-		else{
-			allowedPositions.forEach( (allowedPositionsGroup, index) => {
+		else {
+			allowedPositions.forEach((allowedPositionsGroup, index) => {
 				for (const move of allowedPositionsGroup) {
 					if (myBlockedPositions.indexOf(move) !== -1) {
 						break;
 					}
-					else if ( checking && this.myKingChecked(move) ) {
+					else if (checking && this.myKingChecked(move)) {
 						if (otherBlockedPositions.indexOf(move) !== -1) {
 							break;
 						}
@@ -96,9 +96,9 @@ class Game {
 		return this.filterPositions(unblockedPositions);
 	}
 
-	getPieceAllowedMoves(pieceName){
+	getPieceAllowedMoves(pieceName) {
 		const piece = this.getPieceByName(pieceName);
-		if(this.turn === piece.color){
+		if (this.turn === piece.color) {
 			this.setClickedPiece(piece);
 
 			let pieceAllowedMoves = piece.getAllowedMoves();
@@ -108,41 +108,41 @@ class Game {
 
 			return this.unblockedPositions(piece, pieceAllowedMoves, true);
 		}
-		else{
+		else {
 			return [];
 		}
 	}
 
 	getCastlingSquares(king, allowedMoves) {
-		if ( !king.ableToCastle || this.king_checked(this.turn) ) return allowedMoves;
-		const rook1 = this.getPieceByName(this.turn+'Rook1');
-		const rook2 = this.getPieceByName(this.turn+'Rook2');
+		if (!king.ableToCastle || this.king_checked(this.turn)) return allowedMoves;
+		const rook1 = this.getPieceByName(this.turn + 'Rook1');
+		const rook2 = this.getPieceByName(this.turn + 'Rook2');
 		if (rook1 && rook1.ableToCastle) {
 			const castlingPosition = rook1.position + 2
-            if(
-                !this.positionHasExistingPiece(castlingPosition - 1) &&
-                !this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true) &&
-                !this.positionHasExistingPiece(castlingPosition + 1) && !this.myKingChecked(castlingPosition + 1, true)
-            )
-			allowedMoves[1].push(castlingPosition);
+			if (
+				!this.positionHasExistingPiece(castlingPosition - 1) &&
+				!this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true) &&
+				!this.positionHasExistingPiece(castlingPosition + 1) && !this.myKingChecked(castlingPosition + 1, true)
+			)
+				allowedMoves[1].push(castlingPosition);
 		}
 		if (rook2 && rook2.ableToCastle) {
 			const castlingPosition = rook2.position - 1;
-			if(
-                !this.positionHasExistingPiece(castlingPosition - 1) && !this.myKingChecked(castlingPosition - 1, true) &&
-                !this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true)
-            )
-			allowedMoves[0].push(castlingPosition);
+			if (
+				!this.positionHasExistingPiece(castlingPosition - 1) && !this.myKingChecked(castlingPosition - 1, true) &&
+				!this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true)
+			)
+				allowedMoves[0].push(castlingPosition);
 		}
 		return allowedMoves;
 	}
 
 	getPieceByName(piecename) {
-		return this.pieces.filter( obj => obj.name === piecename )[0];
+		return this.pieces.filter(obj => obj.name === piecename)[0];
 	}
 
 	getPieceByPos(piecePosition) {
-		return this.pieces.filter(obj =>  obj.position == piecePosition )[0];
+		return this.pieces.filter(obj => obj.position == piecePosition)[0];
 	}
 
 	positionHasExistingPiece(position) {
@@ -200,14 +200,14 @@ class Game {
 				if (this.king_dead(this.turn)) {
 					this.checkmate(piece.color);
 				}
-				else{
+				else {
 					// alert('check');
 				}
 			}
 
 			return true;
 		}
-		else{
+		else {
 			return false;
 		}
 	}
@@ -234,9 +234,12 @@ class Game {
 		const queen = new Queen(pawn.position, queenName);
 		this.pieces.push(queen);
 		this.triggerEvent('promotion', queen);
+
+		const square = document.getElementById(queen.position);
+		square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}-queen.png">`;
 	}
 
-	myKingChecked(pos, kill=true){
+	myKingChecked(pos, kill = true) {
 		const piece = this.clickedPiece;
 		const originalPosition = piece.position;
 		const otherPiece = this.getPieceByPos(pos);
@@ -250,7 +253,7 @@ class Game {
 			}
 			return 1;
 		}
-		else{
+		else {
 			piece.changePosition(originalPosition);
 			if (should_kill_other_piece) this.pieces.push(otherPiece);
 			return 0;
@@ -288,7 +291,7 @@ class Game {
 		return 0;
 	}
 
-	checkmate(color){
+	checkmate(color) {
 		this.triggerEvent('checkMate', color);
 		this.clearEvents();
 	}
