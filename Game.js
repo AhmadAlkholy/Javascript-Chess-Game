@@ -3,7 +3,6 @@ class Game {
 		this.pieces = pieces;
 		this.turn = 'white';
 		this.clickedPiece = null;
-		this.enPassantTarget = null;
 		this._events = {
 			pieceMove: [],
 			kill: [],
