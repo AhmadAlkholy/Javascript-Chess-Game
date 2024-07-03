@@ -1,5 +1,5 @@
 const startBoard = game => {
-    const board   = document.getElementById('board');
+    const board = document.getElementById('board');
     const squares = board.querySelectorAll('.square');
     const whiteSematary = document.getElementById('whiteSematary');
     const blackSematary = document.getElementById('blackSematary');
@@ -26,20 +26,20 @@ const startBoard = game => {
             const clickedSquare = pieceImg.parentNode;
             clickedSquare.classList.add('clicked-square');
 
-            allowedMoves.forEach( allowedMove => {
+            allowedMoves.forEach(allowedMove => {
                 if (document.contains(document.getElementById(allowedMove))) {
                     document.getElementById(allowedMove).classList.add('allowed');
                 }
             });
         }
-        else{
+        else {
             clearSquares();
         }
     }
 
     const clearSquares = () => {
         const allowedSquares = board.querySelectorAll('.allowed');
-        allowedSquares.forEach( allowedSquare => allowedSquare.classList.remove('allowed') );
+        allowedSquares.forEach(allowedSquare => allowedSquare.classList.remove('allowed'));
         const cllickedSquare = document.getElementsByClassName('clicked-square')[0];
         if (cllickedSquare) {
             cllickedSquare.classList.remove('clicked-square');
@@ -59,11 +59,11 @@ const startBoard = game => {
         game.movePiece(clickedPieceName, position);
     }
 
-    squares.forEach( square => {
+    squares.forEach(square => {
         square.addEventListener("click", function () {
             movePiece(this);
         });
-        square.addEventListener("dragover", function(event){
+        square.addEventListener("dragover", function (event) {
             event.preventDefault();
         });
         square.addEventListener("drop", function () {
@@ -71,7 +71,7 @@ const startBoard = game => {
         });
     });
 
-    pieces.forEach( piece => {
+    pieces.forEach(piece => {
         const pieceImg = document.getElementById(piece.name);
         pieceImg.addEventListener("drop", function () {
             const square = document.getElementById(piece.position);
@@ -79,14 +79,14 @@ const startBoard = game => {
         });
     });
 
-    document.querySelectorAll('img.piece').forEach( pieceImg => {
-        pieceImg.addEventListener("dragstart", function(event) {
+    document.querySelectorAll('img.piece').forEach(pieceImg => {
+        pieceImg.addEventListener("dragstart", function (event) {
             event.stopPropagation();
             event.dataTransfer.setData("text", event.target.id);
             clearSquares();
             setAllowedSquares(event.target)
         });
-        pieceImg.addEventListener("drop", function(event) {
+        pieceImg.addEventListener("drop", function (event) {
             event.stopPropagation();
             clearSquares();
             setAllowedSquares(event.target)
@@ -95,7 +95,7 @@ const startBoard = game => {
 
     game.on('pieceMove', piece => {
         const square = document.getElementById(piece.position)
-        square.append( document.getElementById(piece.name) );
+        square.append(document.getElementById(piece.name));
         clearSquares();
     });
 
@@ -114,7 +114,7 @@ const startBoard = game => {
         pieceImg.className = '';
 
         const sematary = piece.color === 'white' ? whiteSematary : blackSematary;
-        sematary.querySelector('.'+piece.rank).append(pieceImg);
+        sematary.querySelector('.' + piece.rank).append(pieceImg);
     });
 
     game.on('checkMate', color => {
@@ -161,5 +161,20 @@ const pieces = [
 ];
 
 const game = new Game(pieces);
+
+game.on('pieceMove', piece => {
+    console.log(`${piece.name} moved to position ${piece.position}`);
+    // Actualiza la interfaz del tablero aquí
+});
+
+game.on('kill', piece => {
+    console.log(`${piece.name} was captured`);
+    // Actualiza la interfaz del tablero aquí
+});
+
+game.on('enPassant', piece => {
+    console.log(`${piece.name} performed an en passant capture`);
+    // Actualiza la interfaz del tablero aquí
+});
 
 startBoard(game);

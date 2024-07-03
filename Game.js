@@ -3,14 +3,16 @@ class Game {
 		this.pieces = pieces;
 		this.turn = 'white';
 		this.clickedPiece = null;
+		this.lastMove = null; // Propiedad para rastrear el último movimiento de un peón
 		this._events = {
 			pieceMove: [],
 			kill: [],
 			check: [],
 			promotion: [],
 			checkMate: [],
-			turnChange: []
-		}
+			turnChange: [],
+			enPassant: [] // Nuevo evento para enPassant
+		};
 	}
 
 	clearEvents() {
@@ -171,7 +173,20 @@ class Game {
 		position = parseInt(position);
 
 		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
-			const existedPiece = this.getPieceByPos(position)
+			const existedPiece = this.getPieceByPos(position);
+
+			// Lógica de captura al paso
+			if (piece.rank === 'pawn' && !existedPiece) {
+				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
+				console.log(`En passant moves for ${piece.name}: ${enPassantMoves}`);
+				if (enPassantMoves.includes(position)) {
+					const opponentPawnPos = this.lastMove.to;
+					const opponentPawn = this.getPieceByPos(opponentPawnPos);
+					this.kill(opponentPawn);
+					this.triggerEvent('enPassant', piece);
+					console.log(`${piece.name} captured ${opponentPawn.name} en passant`);
+				}
+			}
 
 			if (existedPiece) {
 				this.kill(existedPiece);
@@ -180,14 +195,21 @@ class Game {
 			if (!existedPiece && piece.hasRank('king') && piece.ableToCastle === true) {
 				if (position - prevPosition === 2) {
 					this.castleRook(piece.color + 'Rook2');
-				}
-				else if (position - prevPosition === -2) {
+				} else if (position - prevPosition === -2) {
 					this.castleRook(piece.color + 'Rook1');
 				}
 				piece.changePosition(position, true);
-			}
-			else {
+			} else {
 				piece.changePosition(position);
+			}
+
+			// Actualizar el último movimiento si es un peón
+			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
+				this.lastMove = { piece: piece, from: prevPosition, to: position };
+				console.log(`Last move updated to: ${piece.name} from ${prevPosition} to ${position}`);
+			} else {
+				this.lastMove = null;
+				console.log(`Last move not updated because the piece is not a pawn or the move was not a double step`);
 			}
 
 			this.triggerEvent('pieceMove', piece);
@@ -203,15 +225,13 @@ class Game {
 
 				if (this.king_dead(this.turn)) {
 					this.checkmate(piece.color);
-				}
-				else {
+				} else {
 					// alert('check');
 				}
 			}
 
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
