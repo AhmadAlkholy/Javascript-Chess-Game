@@ -236,6 +236,8 @@ class Game {
 		}
 	}
 
+
+
 	kill(piece) {
 		this.pieces.splice(this.pieces.indexOf(piece), 1);
 		this.triggerEvent('kill', piece);
