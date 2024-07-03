@@ -4,52 +4,39 @@ class Pawn extends Piece {
 	}
 
 	getAllowedMoves() {
-		const position = this.position;
-		const mathSign = (this.color === 'white') ? 1 : -1;
-		const allowedMoves = [position + mathSign * 10];
+		let allowedMoves = [[], []]; // [attacking moves, moving moves]
 
-		if ((position > 20 && position < 29) || (position > 70 && position < 79)) {
-			allowedMoves.push(position + mathSign * 20);
+		if (this.color === 'white') {
+			// Movimientos de ataque
+			allowedMoves[0].push(this.position + 9, this.position + 11);
+			// Movimientos normales
+			allowedMoves[1].push(this.position + 10);
+			if (Math.floor(this.position / 10) === 2) allowedMoves[1].push(this.position + 20); // Movimiento doble
+		} else {
+			// Movimientos de ataque
+			allowedMoves[0].push(this.position - 9, this.position - 11);
+			// Movimientos normales
+			allowedMoves[1].push(this.position - 10);
+			if (Math.floor(this.position / 10) === 7) allowedMoves[1].push(this.position - 20); // Movimiento doble
 		}
 
-		const attackMoves = [position + mathSign * 9, position + mathSign * 11];
-
-		return [attackMoves, allowedMoves];
+		return allowedMoves;
 	}
 
 	getEnPassantMoves(lastMove) {
-		const position = this.position;
-		const mathSign = (this.color === 'white') ? 1 : -1;
-		const enPassantMoves = [];
-		const row = Math.floor(position / 10);
-		const col = position % 10;
-		const targetRow = (this.color === 'white') ? 5 : 4;
+		let enPassantMoves = [];
 
-		console.log(`Checking en passant for ${this.name} at position ${position}`);
-		console.log(`Pawn is at row ${row}, should be at row ${targetRow}`);
+		if (!lastMove || lastMove.piece.rank !== 'pawn') return enPassantMoves;
 
-		if (row !== targetRow - mathSign) {
-			console.log(`Pawn is not at the correct row for en passant.`);
-			return enPassantMoves;
-		}
+		const direction = this.color === 'white' ? 10 : -10;
+		const startRow = this.color === 'white' ? 5 : 4;
+		const enPassantRow = this.color === 'white' ? 6 : 3;
+		const opponentColor = this.color === 'white' ? 'black' : 'white';
 
-		if (lastMove && lastMove.piece.rank === 'pawn' && Math.abs(lastMove.to - lastMove.from) === 20) {
-			const opponentPawnPos = lastMove.to;
-			const opponentRow = Math.floor(opponentPawnPos / 10);
-			const opponentCol = opponentPawnPos % 10;
-
-			console.log(`Last move details: piece=${lastMove.piece.name}, from=${lastMove.from}, to=${lastMove.to}, isDoubleStep=${Math.abs(lastMove.to - lastMove.from) === 20}`);
-			console.log(`Opponent pawn is at row ${opponentRow}, column ${opponentCol}, current pawn is at column ${col}`);
-
-			if (opponentRow === row && Math.abs(col - opponentCol) === 1) {
-				const targetPos = opponentPawnPos + mathSign * 10;
-				enPassantMoves.push(targetPos);
-				console.log(`En passant move detected for ${this.name} to position ${targetPos}`);
-			} else {
-				console.log(`No en passant move for ${this.name}: row=${row}, opponentRow=${opponentRow}, currentCol=${col}, opponentCol=${opponentCol}`);
-			}
-		} else {
-			console.log(`No valid last move for en passant: last move was not a double step or last move is null`);
+		if (Math.floor(this.position / 10) === startRow && lastMove.piece.color === opponentColor &&
+			Math.abs(lastMove.to - lastMove.from) === 20 &&
+			Math.abs(this.position - lastMove.to) === 1) {
+			enPassantMoves.push(this.position + direction + (lastMove.to - this.position));
 		}
 
 		return enPassantMoves;
