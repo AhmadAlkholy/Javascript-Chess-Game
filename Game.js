@@ -238,6 +238,9 @@ class Game {
 		const queen = new Queen(pawn.position, queenName);
 		this.pieces.push(queen);
 		this.triggerEvent('promotion', queen);
+
+		const square = document.getElementById(queen.position);
+		square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}-queen.png">`;
 	}
 
 	myKingChecked(pos, kill = true) {
