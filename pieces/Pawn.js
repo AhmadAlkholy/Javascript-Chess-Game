@@ -28,7 +28,7 @@ class Pawn extends Piece {
 		console.log(`Checking en passant for ${this.name} at position ${position}`);
 		console.log(`Pawn is at row ${row}, should be at row ${targetRow}`);
 
-		if (row !== targetRow) {
+		if (row !== targetRow - mathSign) {
 			console.log(`Pawn is not at the correct row for en passant.`);
 			return enPassantMoves;
 		}
@@ -41,7 +41,7 @@ class Pawn extends Piece {
 			console.log(`Last move details: piece=${lastMove.piece.name}, from=${lastMove.from}, to=${lastMove.to}, isDoubleStep=${Math.abs(lastMove.to - lastMove.from) === 20}`);
 			console.log(`Opponent pawn is at row ${opponentRow}, column ${opponentCol}, current pawn is at column ${col}`);
 
-			if (opponentRow === targetRow && Math.abs(col - opponentCol) === 1) {
+			if (opponentRow === row && Math.abs(col - opponentCol) === 1) {
 				const targetPos = opponentPawnPos + mathSign * 10;
 				enPassantMoves.push(targetPos);
 				console.log(`En passant move detected for ${this.name} to position ${targetPos}`);
