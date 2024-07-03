@@ -27,4 +27,5 @@ class Pawn extends Piece {
 
 		return [attackMoves, allowedMoves];
 	}
+
 }
