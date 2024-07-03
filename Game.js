@@ -98,10 +98,10 @@ class Game {
 
 	getPieceAllowedMoves(pieceName) {
 		const piece = this.getPieceByName(pieceName);
-		// if (!piece) {
-		// 	console.error(`Piece with name ${pieceName} removed`);
-		// 	return [];
-		// }
+		if (!piece) {
+			console.error(`Piece with name ${pieceName} removed`);
+			return [];
+		}
 		if (this.turn === piece.color) {
 			this.setClickedPiece(piece);
 
