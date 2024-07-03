@@ -98,7 +98,7 @@ class Game {
 
 	getPieceAllowedMoves(pieceName) {
 		const piece = this.getPieceByName(pieceName);
-		if (!piece) {
+		if (!piece) { //debug
 			console.error(`Piece with name ${pieceName} removed`);
 			return [];
 		}
