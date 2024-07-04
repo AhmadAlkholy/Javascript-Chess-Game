@@ -78,6 +78,9 @@ img{
 	box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);*/
 	border:1px solid black !important;
 }
+.last-move {
+	background: #30b030 !important;
+}
 .clicked-square{
 	background: radial-gradient(#333,#222 )!important;
 	border:1px solid black !important;

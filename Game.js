@@ -15,10 +15,48 @@ class Game {
 			checkMate: [],
 			turnChange: []
 		}
+		this.history = new History();
+	}
+
+	saveHistory() {
+		this.history.save();
+	}
+
+	addToHistory(move) {
+		this.history.add(move);
 	}
 
 	clearEvents() {
 		this._events = {};
+	}
+
+	undo() {
+		const step = this.history.pop();
+
+		if (!step) {
+			return false;
+		}
+
+		for (const subStep of step) {
+			subStep.piece.changePosition(subStep.from);
+			if (subStep.from !== 0) {
+				if (subStep.to === 0) {
+					this.pieces.push(subStep.piece);
+				}
+				else if (subStep.castling) {
+					subStep.piece.ableToCastle = true;
+				}
+				this.triggerEvent('pieceMove', subStep);
+			}
+			else {
+				this.pieces.splice(this.pieces.indexOf(subStep.piece), 1);
+				this.triggerEvent('kill', subStep.piece);
+			}
+
+			if (subStep.from !== 0 && subStep.to !== 0 && (!subStep.castling || subStep.piece.hasRank('king')) ) {
+				this.softChangeTurn();
+			}
+		}
 	}
 
 	on (eventName, callback) {
@@ -27,9 +65,14 @@ class Game {
 		}
 	}
 
-	changeTurn() {
+	softChangeTurn() {
 		this.turn = this.turn === 'white' ? 'black' : 'white';
 		this.triggerEvent('turnChange', this.turn);
+	}
+
+	changeTurn() {
+		this.softChangeTurn();
+		this.saveHistory();
 	}
 
 	getPiecesByColor(color) {
@@ -180,14 +223,15 @@ class Game {
 
 		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
 			const prevPosition = piece.position;
-			
 			const existedPiece = this.getPieceByPos(position)
 
 			if (existedPiece) {
 				this.kill(existedPiece);
 			}
 
-			if (!existedPiece && piece.hasRank('king') && piece.ableToCastle === true) {
+			const castling = !existedPiece && piece.hasRank('king') && piece.ableToCastle === true;
+
+			if (castling) {
 				if (position - prevPosition === 2) {
 					this.castleRook(piece.color + 'Rook2');
 				}
@@ -200,11 +244,13 @@ class Game {
 				piece.changePosition(position);
 			}
 
-			this.triggerEvent('pieceMove', piece);
-
 			if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
 				this.promote(piece);
 			}
+
+			const move = { from: prevPosition, to: position, piece: piece, castling };
+			this.addToHistory(move);
+			this.triggerEvent('pieceMove', move);
 
 			this.changeTurn();
 
@@ -228,18 +274,19 @@ class Game {
 
 	kill(piece) {
 		this.pieces.splice(this.pieces.indexOf(piece), 1);
+		this.addToHistory({from: piece.position, to: 0, piece: piece});
 		this.triggerEvent('kill', piece);
 	}
 
 	castleRook(rookName) {
 		const rook = this.getPieceByName(rookName);
+		const prevPosition = rook.position;
 		const newPosition = rookName.indexOf('Rook2') !== -1 ? rook.position - 2 : rook.position + 3;
 
-		this.setClickedPiece(rook);
-
-		this.movePiece(rookName, newPosition);
-		this.triggerEvent('pieceMove', rook);
-		this.changeTurn();
+		rook.changePosition(newPosition);
+		const move = {from: prevPosition, to: newPosition, piece: rook, castling: true};
+		this.triggerEvent('pieceMove', move);
+		this.addToHistory(move);
 	}
 
 	promote(pawn) {
@@ -247,6 +294,7 @@ class Game {
 		this.pieces.splice(this.pieces.indexOf(pawn), 1);
 		const queen = new Queen(pawn.position, queenName);
 		this.pieces.push(queen);
+		this.addToHistory({from: 0, to: queen.position, piece: queen});
 		this.triggerEvent('promotion', queen);
 	}
 
