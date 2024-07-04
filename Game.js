@@ -114,7 +114,7 @@ class Game {
 			if (piece.rank === 'pawn') {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
 				console.log(`Checking en passant moves for ${piece.name}: ${enPassantMoves}`);
-				pieceAllowedMoves[0] = pieceAllowedMoves[0].concat(enPassantMoves);
+				pieceAllowedMoves[1] = pieceAllowedMoves[1].concat(enPassantMoves); // Cambiado de [0] a [1]
 			}
 
 			const unblockedPositions = this.unblockedPositions(piece, pieceAllowedMoves, true);
@@ -186,6 +186,7 @@ class Game {
 			// Lógica de captura al paso
 			if (piece.rank === 'pawn' && !existedPiece) {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
+				console.log(`En passant moves for ${piece.name}: ${enPassantMoves}`);
 				if (enPassantMoves.includes(position)) {
 					const opponentPawnPos = this.lastMove.to;
 					const opponentPawn = this.getPieceByPos(opponentPawnPos);
@@ -213,6 +214,7 @@ class Game {
 			// Actualizar el último movimiento si es un peón
 			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
 				this.lastMove = { piece: piece, from: prevPosition, to: position };
+				console.log(`Last move updated for ${piece.name} from ${prevPosition} to ${position}`);
 			} else {
 				this.lastMove = null;
 			}
@@ -240,6 +242,7 @@ class Game {
 	}
 
 	kill(piece) {
+		console.log(`Killing piece ${piece.name} at position ${piece.position}`);
 		this.pieces.splice(this.pieces.indexOf(piece), 1);
 		this.triggerEvent('kill', piece);
 	}

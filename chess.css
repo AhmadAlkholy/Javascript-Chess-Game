@@ -1,162 +1,191 @@
-*{
+* {
 	margin: 0;
 	padding: 0;
 }
-body{
+
+body {
 	background: #ddd;
 }
-#board{
+
+#board {
 	width: 600px;
 	height: 600px;
-	border:3px #333 solid;
+	border: 3px #333 solid;
 }
-#board div div{
+
+#board div div {
 	float: left;
 	width: 75px;
 	height: 75px;
-	box-sizing:border-box;
+	box-sizing: border-box;
 	border: #000 solid .01cm;
 }
 
-#board .even div:nth-child(even){
+#board .even div:nth-child(even) {
 	background: #ccd;
 }
 
-#board .even div:nth-child(odd){
-	background: rgb(112,112,112);/*621700*/
+#board .even div:nth-child(odd) {
+	background: rgb(112, 112, 112);
+	/*621700*/
 }
 
-#board .odd div:nth-child(even){
-	background: rgb(112,112,112);/*621700*/
+#board .odd div:nth-child(even) {
+	background: rgb(112, 112, 112);
+	/*621700*/
 }
 
-#board .odd div:nth-child(odd){
+#board .odd div:nth-child(odd) {
 	background: #ccd;
 }
 
-.animate{
+.animate {
 	animation: rotateBoard 1s ease-out;
 	animation-fill-mode: both;
 }
-@keyframes rotateBoard { 
-  0% {
-    transform: rotateZ(0);
-  }
-  100%{
-  	transform: rotateZ(-180deg);
-  }
+
+@keyframes rotateBoard {
+	0% {
+		transform: rotateZ(0);
+	}
+
+	100% {
+		transform: rotateZ(-180deg);
+	}
 
 }
-.forward{
+
+.forward {
 	transform: rotateZ(-180deg);
 }
-.backward{
+
+.backward {
 	transform: rotateZ(0);
 }
-.animate-backward{
+
+.animate-backward {
 	animation: rotateBoardBackward 1s ease-out;
 	animation-fill-mode: both;
 }
-@keyframes rotateBoardBackward { 
-  0% {
-    transform: rotateZ(-180deg);
-  }
-  100%{
-  	transform: rotateZ(0);
-  }
+
+@keyframes rotateBoardBackward {
+	0% {
+		transform: rotateZ(-180deg);
+	}
+
+	100% {
+		transform: rotateZ(0);
+	}
 
 }
-img{
+
+img {
 	width: 75px;
-	height: 75px; 
+	height: 75px;
 }
-.allowed{
+
+.allowed {
 	opacity: .8;
-	background: radial-gradient(#333,#222 )!important;
+	background: radial-gradient(#333, #222) !important;
 	/*-webkit-box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);
 	box-shadow: inset 1px -4px 92px 0px rgba(0,0,0,0.75);*/
-	border:1px solid black !important;
+	border: 1px solid black !important;
 }
-.clicked-square{
-	background: radial-gradient(#333,#222 )!important;
-	border:1px solid black !important;
+
+.clicked-square {
+	background: radial-gradient(#333, #222) !important;
+	border: 1px solid black !important;
 }
-#sematary img{
+
+#sematary img {
 	transform: rotateZ(0);
 }
-#whiteSematary{
+
+#whiteSematary {
 	position: absolute;
-    top: 0;
-    left: 610px;
-    width: 180px;
+	top: 0;
+	left: 610px;
+	width: 180px;
 }
-#blackSematary{
+
+#blackSematary {
 	position: absolute;
-    top: 0;
-    left: -190px;
-    width: 180px;
+	top: 0;
+	left: -190px;
+	width: 180px;
 }
-#blackSematary div{
+
+#blackSematary div {
 	overflow-y: auto;
 	margin-bottom: 2px;
 }
-#blackSematary img{
+
+#blackSematary img {
 	float: right;
 }
-#sematary img{
+
+#sematary img {
 	width: 60px;
 	height: 60px;
 }
-#endscene{
+
+#endscene {
 	position: relative;
 	display: none;
 	opacity: 0;
 	z-index: 1;
 }
-.overlay{
+
+.overlay {
 	position: fixed;
 	width: 100%;
 	height: 100%;
 	background: #000;
 	opacity: .5;
 }
-#endscene p{
+
+#endscene p {
 	position: fixed;
-	color:#fff;
+	color: #fff;
 	z-index: 2;
 	width: 100%;
-    text-align: center;
-    margin-top: 40vh;
-    font-size: 40px;
+	text-align: center;
+	margin-top: 40vh;
+	font-size: 40px;
 }
-.show{
+
+.show {
 	display: block !important;
 	animation: showMessage 1s ease-out;
 	animation-fill-mode: both;
 }
-@keyframes showMessage { 
-  0% {
-  	opacity: 0;
-  }
-  100%{
-  	opacity: 1;
-  }
+
+@keyframes showMessage {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
 
 }
-#turn{
+
+#turn {
 	text-align: center;
 	font-size: 18px;
 }
-.winning-sign:first-letter{
+
+.winning-sign:first-letter {
 	text-transform: uppercase;
 }
 
-.flip-board{
+.flip-board {
 	padding: 10px 20px;
-    border-radius: 5px !important;
-    outline: 0;
-    background: #7f979e;
-    color: white;
-    border: 0;
+	border-radius: 5px !important;
+	outline: 0;
+	background: #7f979e;
+	color: white;
+	border: 0;
 }
