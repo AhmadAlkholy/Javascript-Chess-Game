@@ -94,21 +94,24 @@ const startBoard = game => {
     });
 
     game.on('pieceMove', piece => {
+        console.log(`Piece ${piece.name} moved to ${piece.position}`);
         const square = document.getElementById(piece.position);
         square.append(document.getElementById(piece.name));
         clearSquares();
     });
 
     game.on('turnChange', turn => {
+        console.log(`Turn changed to ${turn}`);
         turnSign.innerHTML = turn === 'white' ? "White's Turn" : "Black's Turn";
     });
 
     game.on('promotion', queen => {
         const square = document.getElementById(queen.position);
         square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}Queen.png">`;
-    })
+    });
 
     game.on('kill', piece => {
+        console.log(`Piece ${piece.name} was killed`);
         const pieceImg = document.getElementById(piece.name);
         pieceImg.parentNode.removeChild(pieceImg);
         pieceImg.className = '';
@@ -121,7 +124,16 @@ const startBoard = game => {
         const endScene = document.getElementById('endscene');
         endScene.getElementsByClassName('winning-sign')[0].innerHTML = color + ' Wins';
         endScene.classList.add('show');
-    })
+    });
+
+    game.on('enPassant', piece => {
+        console.log(`${piece.name} performed an en passant capture`);
+        const opponentPawnPos = this.lastMove.to;
+        const opponentPawnImg = document.getElementById(this.getPieceByPos(opponentPawnPos).name);
+        if (opponentPawnImg) {
+            opponentPawnImg.parentNode.removeChild(opponentPawnImg);
+        }
+    });
 }
 
 const pieces = [
