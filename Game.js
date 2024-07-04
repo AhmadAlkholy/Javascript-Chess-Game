@@ -184,11 +184,9 @@ class Game {
 			// Lógica de captura al paso
 			if (piece.rank === 'pawn' && !existedPiece) {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
-				console.log(`Checking en passant moves for ${piece.name}: ${enPassantMoves}`);
 				if (enPassantMoves.includes(position)) {
 					const opponentPawnPos = this.lastMove.to;
 					const opponentPawn = this.getPieceByPos(opponentPawnPos);
-					console.log(`En passant capture: ${opponentPawn.name}`);
 					this.kill(opponentPawn);
 					this.triggerEvent('enPassant', piece);
 				}
@@ -212,7 +210,6 @@ class Game {
 			// Actualizar el último movimiento si es un peón
 			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
 				this.lastMove = { piece: piece, from: prevPosition, to: position };
-				console.log(`lastMove updated: ${JSON.stringify(this.lastMove)}`); // Log para depuración
 			} else {
 				this.lastMove = null;
 			}
