@@ -112,9 +112,16 @@ class Game {
 				pieceAllowedMoves = this.getCastlingSquares(piece, pieceAllowedMoves);
 			}
 
-			return this.unblockedPositions(piece, pieceAllowedMoves, true);
-		}
-		else {
+			// Incluir movimientos de captura al paso
+			if (piece.rank === 'pawn') {
+				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
+				pieceAllowedMoves[0] = pieceAllowedMoves[0].concat(enPassantMoves);
+			}
+
+			const unblockedPositions = this.unblockedPositions(piece, pieceAllowedMoves, true);
+			console.log(`Allowed moves for ${piece.name} at position ${piece.position}: ${unblockedPositions}`); // Log para depuración
+			return unblockedPositions;
+		} else {
 			return [];
 		}
 	}
@@ -204,6 +211,7 @@ class Game {
 			// Actualizar el último movimiento si es un peón
 			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
 				this.lastMove = { piece: piece, from: prevPosition, to: position };
+				console.log(`lastMove updated: ${JSON.stringify(this.lastMove)}`); // Log para depuración
 			} else {
 				this.lastMove = null;
 			}
