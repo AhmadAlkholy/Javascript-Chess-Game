@@ -113,8 +113,8 @@ class Game {
 			// Incluir movimientos de captura al paso
 			if (piece.rank === 'pawn') {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
-				console.log(`En Passant Moves for ${piece.name} at position ${piece.position}: ${enPassantMoves}`);
 				pieceAllowedMoves[0] = pieceAllowedMoves[0].concat(enPassantMoves);
+				console.log(`En Passant Moves for ${piece.name} at position ${piece.position}: ${enPassantMoves}`);
 			}
 
 			const unblockedPositions = this.unblockedPositions(piece, pieceAllowedMoves, true);
@@ -189,7 +189,7 @@ class Game {
 					const opponentPawn = this.getPieceByPos(opponentPawnPos);
 					this.kill(opponentPawn);
 					this.triggerEvent('enPassant', piece);
-					console.log(`En Passant capture by ${piece.name} to position ${position}`);
+					console.log(`${piece.name} performed an en passant capture at position ${position}`);
 				}
 			}
 
@@ -226,6 +226,7 @@ class Game {
 
 			if (this.king_checked(this.turn)) {
 				this.triggerEvent('check', this.turn);
+
 				if (this.king_dead(this.turn)) {
 					this.checkmate(piece.color);
 				}
