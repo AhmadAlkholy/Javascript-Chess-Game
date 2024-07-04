@@ -20,7 +20,6 @@ class Pawn extends Piece {
 			if (Math.floor(this.position / 10) === 7) allowedMoves[1].push(this.position - 20); // Movimiento doble
 		}
 
-		console.log(`Allowed moves for ${this.name} at position ${this.position}:`, allowedMoves);
 		return allowedMoves;
 	}
 
