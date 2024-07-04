@@ -22,6 +22,7 @@ const startBoard = game => {
     const setAllowedSquares = (pieceImg) => {
         clickedPieceName = pieceImg.id;
         const allowedMoves = game.getPieceAllowedMoves(clickedPieceName);
+        console.log(`Allowed moves for ${clickedPieceName}: ${allowedMoves}`);
         if (allowedMoves.length > 0) {
             const clickedSquare = pieceImg.parentNode;
             clickedSquare.classList.add('clicked-square');
@@ -30,6 +31,7 @@ const startBoard = game => {
                 const square = document.getElementById(allowedMove);
                 if (square) {
                     square.classList.add('allowed');
+                    console.log(`Square ${allowedMove} set as allowed`);
                 }
             });
         } else {

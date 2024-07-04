@@ -191,6 +191,7 @@ class Game {
 					const opponentPawn = this.getPieceByPos(opponentPawnPos);
 					this.kill(opponentPawn);
 					this.triggerEvent('enPassant', piece);
+					console.log(`En Passant capture by ${piece.name} to position ${position}`);
 				}
 			}
 
@@ -212,7 +213,7 @@ class Game {
 			// Actualizar el último movimiento si es un peón
 			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
 				this.lastMove = { piece: piece, from: prevPosition, to: position };
-				console.log(`lastMove updated: ${JSON.stringify(this.lastMove)}`); // Log para depuración
+				console.log(`lastMove updated: ${JSON.stringify(this.lastMove)}`);
 			} else {
 				this.lastMove = null;
 			}
@@ -227,7 +228,6 @@ class Game {
 
 			if (this.king_checked(this.turn)) {
 				this.triggerEvent('check', this.turn);
-
 				if (this.king_dead(this.turn)) {
 					this.checkmate(piece.color);
 				}
