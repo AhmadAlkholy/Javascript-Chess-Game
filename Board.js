@@ -1,4 +1,7 @@
-const startBoard = game => {
+const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', aiLevel: 'dumb' }) => {
+
+    const aiPlayer = options.playAgainst === 'ai' ? ai(options.aiColor) : null;
+
     const board   = document.getElementById('board');
     const squares = board.querySelectorAll('.square');
     const whiteSematary = document.getElementById('whiteSematary');
@@ -6,18 +9,36 @@ const startBoard = game => {
     const turnSign = document.getElementById('turn');
     let clickedPieceName;
 
+    let gameState = 'turn_start';
+
+    const resetSematary = () => {
+        whiteSematary.querySelectorAll('div').forEach(div => div.innerHTML = '');
+        blackSematary.querySelectorAll('div').forEach(div => div.innerHTML = '');
+    }
+
     const resetBoard = () => {
+        resetSematary();
+
         for (const square of squares) {
             square.innerHTML = '';
         }
 
         for (const piece of game.pieces) {
             const square = document.getElementById(piece.position);
-            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.png">`
+            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.png">`;
         }
+
+        document.getElementById('endscene').classList.remove('show');
     }
 
     resetBoard();
+
+    const setGameState = state => {
+        gameState = state;
+        if (gameState === 'ai_thinking') {
+            turnSign.innerHTML += ' (thinking...)';
+        }
+    }
 
     const setAllowedSquares = (pieceImg) => {
         clickedPieceName = pieceImg.id;
@@ -38,15 +59,25 @@ const startBoard = game => {
     }
 
     const clearSquares = () => {
-        const allowedSquares = board.querySelectorAll('.allowed');
-        allowedSquares.forEach( allowedSquare => allowedSquare.classList.remove('allowed') );
-        const cllickedSquare = document.getElementsByClassName('clicked-square')[0];
-        if (cllickedSquare) {
-            cllickedSquare.classList.remove('clicked-square');
+        board.querySelectorAll('.allowed').forEach( allowedSquare => allowedSquare.classList.remove('allowed') );
+
+        const clickedSquare = document.getElementsByClassName('clicked-square')[0];
+        if (clickedSquare) {
+            clickedSquare.classList.remove('clicked-square');
         }
     }
 
+    const setLastMoveSquares = (from, to) => {
+        document.querySelectorAll('.last-move').forEach( lastMoveSquare => lastMoveSquare.classList.remove('last-move') );
+        from.classList.add('last-move');
+        to.classList.add('last-move');
+    }
+
     function movePiece(square) {
+        if (gameState === 'ai_thinking') {
+            return;
+        }
+
         const position = square.getAttribute('id');
         const existedPiece = game.getPieceByPos(position);
 
@@ -71,7 +102,7 @@ const startBoard = game => {
         });
     });
 
-    pieces.forEach( piece => {
+    game.pieces.forEach( piece => {
         const pieceImg = document.getElementById(piece.name);
         pieceImg.addEventListener("drop", function () {
             const square = document.getElementById(piece.position);
@@ -81,31 +112,49 @@ const startBoard = game => {
 
     document.querySelectorAll('img.piece').forEach( pieceImg => {
         pieceImg.addEventListener("dragstart", function(event) {
+            if (gameState === 'ai_thinking') {
+                return;
+            }
             event.stopPropagation();
             event.dataTransfer.setData("text", event.target.id);
             clearSquares();
             setAllowedSquares(event.target)
         });
         pieceImg.addEventListener("drop", function(event) {
+            if (gameState === 'ai_thinking') {
+                return;
+            }
             event.stopPropagation();
             clearSquares();
             setAllowedSquares(event.target)
         });
     });
 
-    game.on('pieceMove', piece => {
-        const square = document.getElementById(piece.position)
-        square.append( document.getElementById(piece.name) );
+    game.on('pieceMove', move => {
+        const from = document.getElementById(move.from);
+        const to = document.getElementById(move.piece.position);
+        to.append( document.getElementById(move.piece.name) );
         clearSquares();
+
+        setLastMoveSquares(from, to);
     });
 
     game.on('turnChange', turn => {
+        gameState = turn + '_turn';
         turnSign.innerHTML = turn === 'white' ? "White's Turn" : "Black's Turn";
+
+        if (gameState !== 'checkmate' && options.playAgainst === 'ai' && turn === options.aiColor) {
+            setGameState('ai_thinking');
+            aiPlayer.play(game.pieces, aiPlay => {
+                setGameState('human_turn');
+                game.movePiece(aiPlay.move.pieceName, aiPlay.move.position);
+            });
+        }
     });
 
     game.on('promotion', queen => {
         const square = document.getElementById(queen.position);
-        square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}Queen.png">`;
+        square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}-queen.png">`;
     })
 
     game.on('kill', piece => {
@@ -121,45 +170,54 @@ const startBoard = game => {
         const endScene = document.getElementById('endscene');
         endScene.getElementsByClassName('winning-sign')[0].innerHTML = color + ' Wins';
         endScene.classList.add('show');
+        setGameState('checkmate');
     })
 }
 
+// will be inserted inside startNewGame
 const pieces = [
-    new Rook(11, 'whiteRook1'),
     new Knight(12, 'whiteKnight1'),
-    new Bishop(13, 'whiteBishop1'),
-    new Queen(14, 'whiteQueen'),
-    new King(15, 'whiteKing'),
-    new Bishop(16, 'whiteBishop2'),
     new Knight(17, 'whiteKnight2'),
-    new Rook(18, 'whiteRook2'),
-    new Pawn(21, 'whitePawn1'),
-    new Pawn(22, 'whitePawn2'),
-    new Pawn(23, 'whitePawn3'),
+    new Queen(14, 'whiteQueen'),
+    new Bishop(13, 'whiteBishop1'),
+    new Bishop(16, 'whiteBishop2'),
     new Pawn(24, 'whitePawn4'),
     new Pawn(25, 'whitePawn5'),
     new Pawn(26, 'whitePawn6'),
+    new Pawn(21, 'whitePawn1'),
+    new Pawn(22, 'whitePawn2'),
+    new Pawn(23, 'whitePawn3'),
     new Pawn(27, 'whitePawn7'),
     new Pawn(28, 'whitePawn8'),
+    new Rook(11, 'whiteRook1'),
+    new Rook(18, 'whiteRook2'),
+    new King(15, 'whiteKing'),
 
-    new Pawn(71, 'blackPawn1'),
-    new Pawn(72, 'blackPawn2'),
-    new Pawn(73, 'blackPawn3'),
+    new Knight(82, 'blackKnight1'),
+    new Knight(87, 'blackKnight2'),
+    new Queen(84, 'blackQueen'),
+    new Bishop(83, 'blackBishop1'),
+    new Bishop(86, 'blackBishop2'),
     new Pawn(74, 'blackPawn4'),
     new Pawn(75, 'blackPawn5'),
     new Pawn(76, 'blackPawn6'),
+    new Pawn(71, 'blackPawn1'),
+    new Pawn(72, 'blackPawn2'),
+    new Pawn(73, 'blackPawn3'),
     new Pawn(77, 'blackPawn7'),
     new Pawn(78, 'blackPawn8'),
     new Rook(81, 'blackRook1'),
-    new Knight(82, 'blackKnight1'),
-    new Bishop(83, 'blackBishop1'),
-    new Queen(84, 'blackQueen'),
+    new Rook(88, 'blackRook2'),
     new King(85, 'blackKing'),
-    new Bishop(86, 'blackBishop2'),
-    new Knight(87, 'blackKnight2'),
-    new Rook(88, 'blackRook2')
 ];
+const game = new Game(pieces, 'white');
 
-const game = new Game(pieces);
+const startNewGame = () => {
+    const playAgainst = 'human';
+    const aiLevel = 'dumb';
+    const aiColor = 'black';
+    
+    startBoard(game, {playAgainst, aiColor, aiLevel});
+}
 
-startBoard(game);
+startNewGame();
