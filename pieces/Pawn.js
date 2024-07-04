@@ -40,6 +40,7 @@ class Pawn extends Piece {
 			enPassantMoves.push(this.position + direction + (lastMove.to - this.position));
 		}
 
+		console.log(`En passant moves for ${this.name}: ${enPassantMoves}`);
 		return enPassantMoves;
 	}
 }

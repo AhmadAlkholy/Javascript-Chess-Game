@@ -114,7 +114,7 @@ class Game {
 			if (piece.rank === 'pawn') {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
 				console.log(`Checking en passant moves for ${piece.name}: ${enPassantMoves}`);
-				pieceAllowedMoves[1] = pieceAllowedMoves[1].concat(enPassantMoves); // Cambiado de [0] a [1]
+				pieceAllowedMoves[1] = pieceAllowedMoves[1].concat(enPassantMoves);
 			}
 
 			const unblockedPositions = this.unblockedPositions(piece, pieceAllowedMoves, true);
