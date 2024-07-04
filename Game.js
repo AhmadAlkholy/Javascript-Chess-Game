@@ -32,7 +32,7 @@ class Game {
 
 	getPiecesByColor(color) {
 		return this.pieces.filter(obj => {
-			return obj.color === color
+			return obj.color === color;
 		});
 	}
 
@@ -46,41 +46,39 @@ class Game {
 			const secondDigit = pos.toString().charAt(1);
 			return pos > 10 && pos < 89 && secondDigit < 9 && secondDigit > 0;
 		});
-	};
+	}
 
 	unblockedPositions(piece, allowedPositions, checking = true) {
 		const unblockedPositions = [];
 
+		let myBlockedPositions;
+		let otherBlockedPositions;
 		if (piece.color === 'white') {
-			var myBlockedPositions = this.getPlayerPositions('white');
-			var otherBlockedPositions = this.getPlayerPositions('black');
-		}
-		else {
-			var myBlockedPositions = this.getPlayerPositions('black');
-			var otherBlockedPositions = this.getPlayerPositions('white');
+			myBlockedPositions = this.getPlayerPositions('white');
+			otherBlockedPositions = this.getPlayerPositions('black');
+		} else {
+			myBlockedPositions = this.getPlayerPositions('black');
+			otherBlockedPositions = this.getPlayerPositions('white');
 		}
 
 		if (piece.hasRank('pawn')) {
-			for (const move of allowedPositions[0]) { //attacking moves
+			for (const move of allowedPositions[0]) { // attacking moves
 				if (checking && this.myKingChecked(move)) continue;
 				if (otherBlockedPositions.indexOf(move) !== -1) unblockedPositions.push(move);
 			}
 			const blockedPositions = [...myBlockedPositions, ...otherBlockedPositions];
-			for (const move of allowedPositions[1]) { //moving moves
+			for (const move of allowedPositions[1]) { // moving moves
 				if (blockedPositions.indexOf(move) !== -1) {
 					break;
-				}
-				else if (checking && this.myKingChecked(move, false)) continue;
+				} else if (checking && this.myKingChecked(move, false)) continue;
 				unblockedPositions.push(move);
 			}
-		}
-		else {
+		} else {
 			allowedPositions.forEach((allowedPositionsGroup, index) => {
 				for (const move of allowedPositionsGroup) {
 					if (myBlockedPositions.indexOf(move) !== -1) {
 						break;
-					}
-					else if (checking && this.myKingChecked(move)) {
+					} else if (checking && this.myKingChecked(move)) {
 						if (otherBlockedPositions.indexOf(move) !== -1) {
 							break;
 						}
@@ -132,7 +130,7 @@ class Game {
 		const rook1 = this.getPieceByName(this.turn + 'Rook1');
 		const rook2 = this.getPieceByName(this.turn + 'Rook2');
 		if (rook1 && rook1.ableToCastle) {
-			const castlingPosition = rook1.position + 2
+			const castlingPosition = rook1.position + 2;
 			if (
 				!this.positionHasExistingPiece(castlingPosition - 1) &&
 				!this.positionHasExistingPiece(castlingPosition) && !this.myKingChecked(castlingPosition, true) &&
@@ -279,8 +277,7 @@ class Game {
 				this.pieces.push(otherPiece);
 			}
 			return 1;
-		}
-		else {
+		} else {
 			piece.changePosition(originalPosition);
 			if (should_kill_other_piece) this.pieces.push(otherPiece);
 			return 0;

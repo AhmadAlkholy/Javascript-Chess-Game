@@ -13,7 +13,7 @@ const startBoard = game => {
 
         for (const piece of game.pieces) {
             const square = document.getElementById(piece.position);
-            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.png">`
+            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.png">`;
         }
     }
 
@@ -22,15 +22,13 @@ const startBoard = game => {
     const setAllowedSquares = (pieceImg) => {
         clickedPieceName = pieceImg.id;
         const allowedMoves = game.getPieceAllowedMoves(clickedPieceName);
-        console.log(`Allowed moves for ${clickedPieceName}: ${allowedMoves}`);
-        if (allowedMoves.length > 0) {
+        if (allowedMoves) {
             const clickedSquare = pieceImg.parentNode;
             clickedSquare.classList.add('clicked-square');
 
             allowedMoves.forEach(allowedMove => {
-                const square = document.getElementById(allowedMove);
-                if (square) {
-                    square.classList.add('allowed');
+                if (document.contains(document.getElementById(allowedMove))) {
+                    document.getElementById(allowedMove).classList.add('allowed');
                     console.log(`Square ${allowedMove} set as allowed`);
                 }
             });
@@ -86,17 +84,17 @@ const startBoard = game => {
             event.stopPropagation();
             event.dataTransfer.setData("text", event.target.id);
             clearSquares();
-            setAllowedSquares(event.target)
+            setAllowedSquares(event.target);
         });
         pieceImg.addEventListener("drop", function (event) {
             event.stopPropagation();
             clearSquares();
-            setAllowedSquares(event.target)
+            setAllowedSquares(event.target);
         });
     });
 
     game.on('pieceMove', piece => {
-        const square = document.getElementById(piece.position)
+        const square = document.getElementById(piece.position);
         square.append(document.getElementById(piece.name));
         clearSquares();
     });
