@@ -113,8 +113,9 @@ const startBoard = game => {
     game.on('kill', piece => {
         console.log(`Piece ${piece.name} was killed`);
         const pieceImg = document.getElementById(piece.name);
-        pieceImg.parentNode.removeChild(pieceImg);
-        pieceImg.className = '';
+        if (pieceImg) {
+            pieceImg.parentNode.removeChild(pieceImg);
+        }
 
         const sematary = piece.color === 'white' ? whiteSematary : blackSematary;
         sematary.querySelector('.' + piece.rank).append(pieceImg);
@@ -128,8 +129,9 @@ const startBoard = game => {
 
     game.on('enPassant', piece => {
         console.log(`${piece.name} performed an en passant capture`);
-        const opponentPawnPos = this.lastMove.to;
-        const opponentPawnImg = document.getElementById(this.getPieceByPos(opponentPawnPos).name);
+        const opponentPawnPos = game.lastMove.to; // Note that game.lastMove should be referenced
+        const opponentPawn = game.getPieceByPos(opponentPawnPos); // Get the piece to remove
+        const opponentPawnImg = document.getElementById(opponentPawn.name);
         if (opponentPawnImg) {
             opponentPawnImg.parentNode.removeChild(opponentPawnImg);
         }
