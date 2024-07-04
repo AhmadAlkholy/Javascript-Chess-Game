@@ -40,9 +40,9 @@ const startBoard = game => {
     const clearSquares = () => {
         const allowedSquares = board.querySelectorAll('.allowed');
         allowedSquares.forEach(allowedSquare => allowedSquare.classList.remove('allowed'));
-        const cllickedSquare = document.getElementsByClassName('clicked-square')[0];
-        if (cllickedSquare) {
-            cllickedSquare.classList.remove('clicked-square');
+        const clickedSquare = document.getElementsByClassName('clicked-square')[0];
+        if (clickedSquare) {
+            clickedSquare.classList.remove('clicked-square');
         }
     }
 

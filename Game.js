@@ -100,7 +100,7 @@ class Game {
 
 	getPieceAllowedMoves(pieceName) {
 		const piece = this.getPieceByName(pieceName);
-		if (!piece) { //debug
+		if (!piece) {
 			console.error(`Piece with name ${pieceName} removed`);
 			return [];
 		}
@@ -119,7 +119,7 @@ class Game {
 			}
 
 			const unblockedPositions = this.unblockedPositions(piece, pieceAllowedMoves, true);
-			console.log(`Allowed moves for ${piece.name} at position ${piece.position}: ${unblockedPositions}`); // Log para depuración
+			console.log(`Allowed moves for ${piece.name} at position ${piece.position}: ${unblockedPositions}`);
 			return unblockedPositions;
 		} else {
 			return [];
