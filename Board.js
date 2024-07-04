@@ -27,12 +27,12 @@ const startBoard = game => {
             clickedSquare.classList.add('clicked-square');
 
             allowedMoves.forEach(allowedMove => {
-                if (document.contains(document.getElementById(allowedMove))) {
-                    document.getElementById(allowedMove).classList.add('allowed');
+                const square = document.getElementById(allowedMove);
+                if (square) {
+                    square.classList.add('allowed');
                 }
             });
-        }
-        else {
+        } else {
             clearSquares();
         }
     }

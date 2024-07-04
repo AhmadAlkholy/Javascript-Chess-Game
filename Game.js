@@ -115,6 +115,7 @@ class Game {
 			// Incluir movimientos de captura al paso
 			if (piece.rank === 'pawn') {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
+				console.log(`En Passant Moves for ${piece.name} at position ${piece.position}: ${enPassantMoves}`);
 				pieceAllowedMoves[0] = pieceAllowedMoves[0].concat(enPassantMoves);
 			}
 
