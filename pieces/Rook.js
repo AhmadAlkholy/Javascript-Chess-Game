@@ -5,7 +5,7 @@ class Rook extends Piece {
 	}
 
 	changePosition(position) {
-		this.position = parseInt(position);
+		super.changePosition(position);
 		this.ableToCastle = false;
 	}
 

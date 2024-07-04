@@ -8,7 +8,7 @@ class Piece {
 
 
 	hasRank(rank) {
-		return this.rank == rank;
+		return this.rank === rank;
 	}
 
 	changePosition(position) {
