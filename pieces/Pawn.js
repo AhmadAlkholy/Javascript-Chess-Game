@@ -30,7 +30,6 @@ class Pawn extends Piece {
 
 		const direction = this.color === 'white' ? 10 : -10;
 		const startRow = this.color === 'white' ? 5 : 4;
-		const enPassantRow = this.color === 'white' ? 6 : 3;
 		const opponentColor = this.color === 'white' ? 'black' : 'white';
 
 		if (Math.floor(this.position / 10) === startRow && lastMove.piece.color === opponentColor &&
