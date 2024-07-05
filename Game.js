@@ -113,12 +113,10 @@ class Game {
 			// Incluir movimientos de captura al paso
 			if (piece.rank === 'pawn') {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
-				console.log(`Checking en passant moves for ${piece.name}: ${enPassantMoves}`);
 				pieceAllowedMoves[1] = pieceAllowedMoves[1].concat(enPassantMoves); // Asegúrate de concatenar en [1] para movimientos de avance
 			}
 
 			const unblockedPositions = this.unblockedPositions(piece, pieceAllowedMoves, true);
-			console.log(`Allowed moves for ${piece.name} at position ${piece.position}: ${unblockedPositions}`);
 			return unblockedPositions;
 		} else {
 			return [];
@@ -178,15 +176,12 @@ class Game {
 		const prevPosition = piece.position;
 		position = parseInt(position);
 
-		console.log(`Moving ${pieceName} to position ${position}`);
-
 		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
 			const existedPiece = this.getPieceByPos(position);
 
 			// Lógica de captura al paso
 			if (piece.rank === 'pawn' && !existedPiece) {
 				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
-				console.log(`En passant moves for ${piece.name}: ${enPassantMoves}`);
 				if (enPassantMoves.includes(position)) {
 					const opponentPawnPos = this.lastMove.to;
 					const opponentPawn = this.getPieceByPos(opponentPawnPos);
@@ -200,16 +195,7 @@ class Game {
 				this.kill(existedPiece);
 			}
 
-			if (!existedPiece && piece.hasRank('king') && piece.ableToCastle === true) {
-				if (position - prevPosition === 2) {
-					this.castleRook(piece.color + 'Rook2');
-				} else if (position - prevPosition === -2) {
-					this.castleRook(piece.color + 'Rook1');
-				}
-				piece.changePosition(position, true);
-			} else {
-				piece.changePosition(position);
-			}
+			piece.changePosition(position);
 
 			// Actualizar el último movimiento si es un peón
 			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
@@ -242,7 +228,6 @@ class Game {
 	}
 
 	kill(piece) {
-		console.log(`Killing piece ${piece.name} at position ${piece.position}`);
 		this.pieces.splice(this.pieces.indexOf(piece), 1);
 		this.triggerEvent('kill', piece);
 	}

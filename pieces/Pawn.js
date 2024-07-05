@@ -32,15 +32,12 @@ class Pawn extends Piece {
 		const startRow = this.color === 'white' ? 5 : 4;
 		const opponentColor = this.color === 'white' ? 'black' : 'white';
 
-		console.log(`Checking en passant for ${this.name} at ${this.position} with last move from ${lastMove.from} to ${lastMove.to}`);
-
 		if (Math.floor(this.position / 10) === startRow && lastMove.piece.color === opponentColor &&
 			Math.abs(lastMove.to - lastMove.from) === 20 &&
 			Math.abs(this.position - lastMove.to) === 1) {
-			enPassantMoves.push(this.position + direction + (lastMove.to - this.position));
+			enPassantMoves.push(lastMove.to + direction);
 		}
 
-		console.log(`En passant moves for ${this.name}: ${enPassantMoves}`);
 		return enPassantMoves;
 	}
 }
