@@ -64,7 +64,7 @@ class Game {
 		if (piece.hasRank('pawn')) {
 			for (const move of allowedPositions[0]) { // attacking moves
 				if (checking && this.myKingChecked(move)) continue;
-				if (otherBlockedPositions.indexOf(move) !== -1) unblockedPositions.push(move);
+				if (otherBlockedPositions.indexOf(move) !== -1 || move === piece.position + (piece.color === 'white' ? 10 : -10)) unblockedPositions.push(move);
 			}
 			const blockedPositions = [...myBlockedPositions, ...otherBlockedPositions];
 			for (const move of allowedPositions[1]) { // moving moves
@@ -73,6 +73,13 @@ class Game {
 				} else if (checking && this.myKingChecked(move, false)) continue;
 				unblockedPositions.push(move);
 			}
+
+			// Agregar movimientos de captura al paso
+			const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
+			for (const move of enPassantMoves) {
+				unblockedPositions.push(move);
+			}
+
 		} else {
 			allowedPositions.forEach((allowedPositionsGroup, index) => {
 				for (const move of allowedPositionsGroup) {
@@ -202,7 +209,7 @@ class Game {
 				this.lastMove = { piece: piece, from: prevPosition, to: position };
 				console.log(`Last move updated for ${piece.name} from ${prevPosition} to ${position}`);
 			} else {
-				this.lastMove = null;
+				this.lastMove = { piece: piece, from: prevPosition, to: position };
 			}
 
 			this.triggerEvent('pieceMove', piece);
