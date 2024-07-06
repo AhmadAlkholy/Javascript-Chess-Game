@@ -244,13 +244,13 @@ class Game {
 				piece.changePosition(position);
 			}
 
-			if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
-				this.promote(piece);
-			}
-
 			const move = { from: prevPosition, to: position, piece: piece, castling };
 			this.addToHistory(move);
 			this.triggerEvent('pieceMove', move);
+
+			if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
+				this.promote(piece);
+			}
 
 			this.changeTurn();
 
