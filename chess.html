@@ -6,10 +6,36 @@
 </head>
 <body>
 
-<div id="endscene">
-	<p class="winning-sign"></p>
-	<div class="overlay">
+<div id="startscene" class="scene show">
+	<div class="scene-content" style="margin-top: 15vh;">
+		<div style="margin-bottom: 50px;">
+			<h2>Play Against</h2>
+			<input type="radio" name="oponent" id="humanOponent" value="human" onclick="hideColorSelect()" checked>
+			<label for="humanOponent">Human</label>
+			&ensp;
+			<input type="radio" name="oponent" id="aiOponent" value="ai" onclick="showColorSelect()">
+			<label for="aiOponent">AI</label>
+		</div>
+		
+		<div class="select-color-container" style="margin-bottom: 50px;display: none;">
+			<h2>Select Your Color</h2>
+			<input type="radio" name="human_color" id="humanColorWhite" value="white">
+			<label for="humanColorWhite">White</label>
+			&ensp;
+			<input type="radio" name="human_color" id="humanColorBlack" value="black">
+			<label for="humanColorBlack">Black</label>
+		</div>
+
+		<div class="start-game-container">
+			<button class="button button-big" onclick="startNewGame()">Start Game</button>
+		</div>
 	</div>
+	<div class="overlay"></div>
+</div>
+
+<div id="endscene" class="scene">
+	<p class="scene-content winning-sign"></p>
+	<div class="overlay"></div>
 </div>
 	
 <br>
@@ -155,7 +181,6 @@
 			}
 		}	
 	}
-		
 </script>
 
 </body>

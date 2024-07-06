@@ -9,8 +9,6 @@ const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', ai
     const turnSign = document.getElementById('turn');
     let clickedPieceName;
 
-    let gameState = 'turn_start';
-
     const resetSematary = () => {
         whiteSematary.querySelectorAll('div').forEach(div => div.innerHTML = '');
         blackSematary.querySelectorAll('div').forEach(div => div.innerHTML = '');
@@ -130,16 +128,7 @@ const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', ai
         });
     });
 
-    game.on('pieceMove', move => {
-        const from = document.getElementById(move.from);
-        const to = document.getElementById(move.piece.position);
-        to.append( document.getElementById(move.piece.name) );
-        clearSquares();
-
-        setLastMoveSquares(from, to);
-    });
-
-    game.on('turnChange', turn => {
+    const startTurn = turn => {
         gameState = turn + '_turn';
         turnSign.innerHTML = turn === 'white' ? "White's Turn" : "Black's Turn";
 
@@ -150,7 +139,18 @@ const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', ai
                 game.movePiece(aiPlay.move.pieceName, aiPlay.move.position);
             });
         }
+    }
+
+    game.on('pieceMove', move => {
+        const from = document.getElementById(move.from);
+        const to = document.getElementById(move.piece.position);
+        to.append( document.getElementById(move.piece.name) );
+        clearSquares();
+
+        setLastMoveSquares(from, to);
     });
+
+    game.on('turnChange', startTurn);
 
     game.on('promotion', queen => {
         const square = document.getElementById(queen.position);
@@ -171,10 +171,11 @@ const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', ai
         endScene.getElementsByClassName('winning-sign')[0].innerHTML = color + ' Wins';
         endScene.classList.add('show');
         setGameState('checkmate');
-    })
+    });
+
+    startTurn('white');
 }
 
-// will be inserted inside startNewGame
 const pieces = [
     new Knight(12, 'whiteKnight1'),
     new Knight(17, 'whiteKnight2'),
@@ -213,11 +214,15 @@ const pieces = [
 const game = new Game(pieces, 'white');
 
 const startNewGame = () => {
-    const playAgainst = 'human';
+    document.querySelectorAll('.scene').forEach( scene => scene.classList.remove('show') );
+
+    const playAgainst = document.querySelector('input[name="oponent"]:checked').value;
+    const humanColor = document.querySelector('input[name="human_color"]:checked')?.value;
+    const aiColor = humanColor === 'white' ? 'black' : 'white';
     const aiLevel = 'dumb';
-    const aiColor = 'black';
     
     startBoard(game, {playAgainst, aiColor, aiLevel});
 }
 
-startNewGame();
+const showColorSelect = () => document.querySelector('.select-color-container').classList.add('show');
+const hideColorSelect = () => document.querySelector('.select-color-container').classList.remove('show');
