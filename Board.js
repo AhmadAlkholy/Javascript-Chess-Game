@@ -205,33 +205,4 @@ const pieces = [
 
 const game = new Game(pieces);
 
-game.on('pieceMove', piece => {
-    console.log(`${piece.name} moved to position ${piece.position}`);
-    // Actualiza la interfaz del tablero aquí
-});
-
-game.on('kill', piece => {
-    console.log(`${piece.name} was captured`);
-    // Actualiza la interfaz del tablero aquí
-});
-
-game.on('enPassant', data => {
-    const { piece, opponentPawnPos } = data;
-    console.log(`${piece.name} performed an en passant capture`);
-    const opponentPawn = game.getPieceByPos(opponentPawnPos);
-    if (opponentPawn) {
-        const opponentPawnImg = document.getElementById(opponentPawn.name);
-        if (opponentPawnImg) {
-            opponentPawnImg.parentNode.removeChild(opponentPawnImg);
-        }
-    }
-
-    // Actualizar la posición de la pieza que realiza la captura al paso
-    const square = document.getElementById(piece.position);
-    const movedPiece = document.getElementById(piece.name);
-    if (movedPiece) {
-        square.appendChild(movedPiece);
-    }
-});
-
 startBoard(game);
