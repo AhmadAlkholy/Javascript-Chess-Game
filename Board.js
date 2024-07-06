@@ -57,7 +57,15 @@ const startBoard = game => {
             return setAllowedSquares(pieceImg);
         }
 
-        game.movePiece(clickedPieceName, position);
+        const successfulMove = game.movePiece(clickedPieceName, position);
+
+        // Actualizar la UI solo si el movimiento fue exitoso
+        if (successfulMove) {
+            const movedPiece = document.getElementById(clickedPieceName);
+            if (movedPiece) {
+                square.appendChild(movedPiece);
+            }
+        }
     }
 
     squares.forEach(square => {
@@ -128,13 +136,33 @@ const startBoard = game => {
         endScene.classList.add('show');
     });
 
-    game.on('enPassant', piece => {
+    game.on('enPassant', data => {
+        const { piece, opponentPawnPos } = data;
         console.log(`${piece.name} performed an en passant capture`);
-        const opponentPawnPos = game.lastMove.to; // Note that game.lastMove should be referenced
-        const opponentPawn = game.getPieceByPos(opponentPawnPos); // Get the piece to remove
-        const opponentPawnImg = document.getElementById(opponentPawn.name);
-        if (opponentPawnImg) {
-            opponentPawnImg.parentNode.removeChild(opponentPawnImg);
+        const opponentPawn = game.getPieceByPos(opponentPawnPos);
+        if (opponentPawn) {
+            const opponentPawnImg = document.getElementById(opponentPawn.name);
+            if (opponentPawnImg) {
+                opponentPawnImg.parentNode.removeChild(opponentPawnImg);
+            }
+        }
+
+        // Actualizar la posición de la pieza que realiza la captura al paso
+        const square = document.getElementById(piece.position);
+        const movedPiece = document.getElementById(piece.name);
+        if (movedPiece) {
+            square.appendChild(movedPiece);
+        }
+    });
+
+    game.on('enPassantCapture', data => {
+        const { piece, opponentPawnPos } = data;
+        const opponentPawn = game.getPieceByPos(opponentPawnPos);
+        if (opponentPawn) {
+            const opponentPawnImg = document.getElementById(opponentPawn.name);
+            if (opponentPawnImg) {
+                opponentPawnImg.parentNode.removeChild(opponentPawnImg);
+            }
         }
     });
 }
@@ -187,9 +215,23 @@ game.on('kill', piece => {
     // Actualiza la interfaz del tablero aquí
 });
 
-game.on('enPassant', piece => {
+game.on('enPassant', data => {
+    const { piece, opponentPawnPos } = data;
     console.log(`${piece.name} performed an en passant capture`);
-    // Actualiza la interfaz del tablero aquí
+    const opponentPawn = game.getPieceByPos(opponentPawnPos);
+    if (opponentPawn) {
+        const opponentPawnImg = document.getElementById(opponentPawn.name);
+        if (opponentPawnImg) {
+            opponentPawnImg.parentNode.removeChild(opponentPawnImg);
+        }
+    }
+
+    // Actualizar la posición de la pieza que realiza la captura al paso
+    const square = document.getElementById(piece.position);
+    const movedPiece = document.getElementById(piece.name);
+    if (movedPiece) {
+        square.appendChild(movedPiece);
+    }
 });
 
 startBoard(game);
