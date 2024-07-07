@@ -11,7 +11,8 @@ class Game {
 			promotion: [],
 			checkMate: [],
 			turnChange: [],
-			enPassant: [] // Nuevo evento para enPassant
+			enPassant: [], // Nuevo evento para enPassant
+			castling: []   // Nuevo evento para enroque
 		};
 	}
 
@@ -205,69 +206,19 @@ class Game {
 				this.kill(existedPiece);
 			}
 
-			piece.changePosition(position);
-
-			// Actualizar el último movimiento si es un peón
-			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
-				this.lastMove = { piece: piece, from: prevPosition, to: position };
-				console.log(`Last move updated for ${piece.name} from ${prevPosition} to ${position}`);
+			// Lógica para enroque
+			if (!existedPiece && piece.hasRank('king') && piece.ableToCastle === true) {
+				if (position - prevPosition === 2) {
+					this.castleRook(piece.color + 'Rook2');
+				}
+				else if (position - prevPosition === -2) {
+					this.castleRook(piece.color + 'Rook1');
+				}
+				piece.changePosition(position, true);
+				this.triggerEvent('castling', { king: piece, rook: this.getPieceByName(piece.color + 'Rook' + (position - prevPosition === 2 ? 2 : 1)) });
 			} else {
-				this.lastMove = { piece: piece, from: prevPosition, to: position };
+				piece.changePosition(position);
 			}
-
-			this.triggerEvent('pieceMove', piece);
-
-			if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
-				this.promote(piece);
-			}
-
-			this.changeTurn();
-
-			if (this.king_checked(this.turn)) {
-				this.triggerEvent('check', this.turn);
-
-				if (this.king_dead(this.turn)) {
-					this.checkmate(piece.color);
-				}
-			}
-
-			if (enPassantCapture && opponentPawnPos) {
-				this.triggerEvent('enPassantCapture', { piece, opponentPawnPos });
-			}
-
-			return true;
-		} else {
-			return false;
-		}
-	}
-	movePiece(pieceName, position) {
-		const piece = this.getPieceByName(pieceName);
-		const prevPosition = piece.position;
-		position = parseInt(position);
-
-		if (piece && this.getPieceAllowedMoves(piece.name).indexOf(position) !== -1) {
-			const existedPiece = this.getPieceByPos(position);
-
-			// Lógica de captura al paso
-			let enPassantCapture = false;
-			let opponentPawnPos = null;
-			if (piece.rank === 'pawn' && !existedPiece) {
-				const enPassantMoves = piece.getEnPassantMoves(this.lastMove);
-				if (enPassantMoves.includes(position)) {
-					opponentPawnPos = this.lastMove.to;
-					const opponentPawn = this.getPieceByPos(opponentPawnPos);
-					this.kill(opponentPawn);
-					enPassantCapture = true;
-					this.triggerEvent('enPassant', { piece, opponentPawnPos });
-					console.log(`${piece.name} performed an en passant capture on ${opponentPawn.name}`);
-				}
-			}
-
-			if (existedPiece) {
-				this.kill(existedPiece);
-			}
-
-			piece.changePosition(position);
 
 			// Actualizar el último movimiento si es un peón
 			if (piece.rank === 'pawn' && Math.abs(position - prevPosition) === 20) {
@@ -314,9 +265,8 @@ class Game {
 
 		this.setClickedPiece(rook);
 
-		this.movePiece(rookName, newPosition);
+		rook.changePosition(newPosition);
 		this.triggerEvent('pieceMove', rook);
-		this.changeTurn();
 	}
 
 	promote(pawn) {
