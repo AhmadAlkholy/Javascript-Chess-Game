@@ -23,7 +23,7 @@ const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', ai
 
         for (const piece of game.pieces) {
             const square = document.getElementById(piece.position);
-            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.png">`;
+            square.innerHTML = `<img class="piece ${piece.rank}" id="${piece.name}" src="img/${piece.color}-${piece.rank}.webp">`;
         }
 
         document.getElementById('endscene').classList.remove('show');
@@ -154,7 +154,7 @@ const startBoard = (game, options = { playAgainst: 'human', aiColor: 'black', ai
 
     game.on('promotion', queen => {
         const square = document.getElementById(queen.position);
-        square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}-queen.png">`;
+        square.innerHTML = `<img class="piece queen" id="${queen.name}" src="img/${queen.color}-queen.webp">`;
     })
 
     game.on('kill', piece => {
