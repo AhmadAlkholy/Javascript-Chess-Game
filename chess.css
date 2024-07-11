@@ -138,10 +138,18 @@ img.piece{
     font-size: 40px;
 	height: 100vh;
 }
+
 .scene-content h2 {
 	font-weight: 500;
 	margin-bottom: 15px;
 }
+
+@media screen and (max-width: 600px) {
+	.scene-content h2 {
+		font-size: 2rem;
+	}
+}
+
 .show{
 	display: block !important;
 	animation: showMessage 1s ease-out;
