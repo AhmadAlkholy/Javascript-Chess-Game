@@ -1,7 +1,7 @@
 class SimulationGame extends Game {
 
     startNewGame(pieces, turn) {
-		this.pieces = pieces.map( piece =>  new piece.constructor(piece.position, piece.name) );
+		this._setPieces(pieces);
 		this.turn = turn;
 		this.clickedPiece = null;
 	}
@@ -21,7 +21,7 @@ class SimulationGame extends Game {
         if(piece && this.turn === piece.color){
             this.setClickedPiece(piece);
 
-            let pieceAllowedMoves = piece.getAllowedMoves();
+            let pieceAllowedMoves = getAllowedMoves(piece);
             if (piece.rank === 'king') {
                 pieceAllowedMoves = this.getCastlingSquares(piece, pieceAllowedMoves);
             }
@@ -47,7 +47,7 @@ class SimulationGame extends Game {
             this.kill(existedPiece);
         }
 
-        const castling = !existedPiece && piece.hasRank('king') && piece.ableToCastle === true;
+        const castling = !existedPiece && piece.rank === 'king' && piece.ableToCastle === true;
 
         if (castling) {
             if (position - prevPosition === 2) {
@@ -56,10 +56,10 @@ class SimulationGame extends Game {
             else if (position - prevPosition === -2) {
                 this.castleRook(piece.color + 'Rook1');
             }
-            piece.changePosition(position, true);
+            changePosition(piece, position, true);
         }
         else {
-            piece.changePosition(position);
+            changePosition(piece, position);
         }
 
         if (piece.rank === 'pawn' && (position > 80 || position < 20)) {
@@ -82,7 +82,7 @@ class SimulationGame extends Game {
         const enemyPieces = this.getPiecesByColor(enemyColor);
         for (const enemyPiece of enemyPieces) {
             this.setClickedPiece(enemyPiece);
-            const allowedMoves = this.unblockedPositions(enemyPiece, enemyPiece.getAllowedMoves(), false);
+            const allowedMoves = this.unblockedPositions(enemyPiece, getAllowedMoves(enemyPiece), false);
             if (allowedMoves.indexOf(king.position) !== -1) {
                 this.setClickedPiece(piece);
                 return 1;

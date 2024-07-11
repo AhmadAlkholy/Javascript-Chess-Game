@@ -4,7 +4,8 @@ class Game {
 	}
 
 	startNewGame(pieces, turn) {
-		this.pieces = pieces.map( piece =>  new piece.constructor(piece.position, piece.name) );
+		this._setPieces(pieces);
+
 		this.turn = turn;
 		this.clickedPiece = null;
 		this._events = {
@@ -16,6 +17,22 @@ class Game {
 			turnChange: []
 		}
 		this.history = new History();
+	}
+
+	_setPieces(pieces) {
+		this.pieces = Array(pieces.length);
+        pieces.forEach( (piece, i) =>  {
+			this.pieces[i] = { rank: piece.rank, position: piece.position, color: piece.color, name: piece.name, ableToCastle: piece.ableToCastle }
+		});
+		this.playerPieces = {
+			white: this.pieces.filter(piece => piece.color === 'white'),
+			black: this.pieces.filter(piece => piece.color === 'black')
+		}
+	}
+
+	_removePieceFromPieces(piece) {
+		this.pieces.splice(this.pieces.indexOf(piece), 1);
+		this.playerPieces[piece.color].splice(this.playerPieces[piece.color].indexOf(piece), 1)
 	}
 
 	saveHistory() {
@@ -38,7 +55,7 @@ class Game {
 		}
 
 		for (const subStep of step) {
-			subStep.piece.changePosition(subStep.from);
+			changePosition(subStep.piece, subStep.from);
 			if (subStep.from !== 0) {
 				if (subStep.to === 0) {
 					this.pieces.push(subStep.piece);
@@ -49,17 +66,17 @@ class Game {
 				this.triggerEvent('pieceMove', subStep);
 			}
 			else {
-				this.pieces.splice(this.pieces.indexOf(subStep.piece), 1);
+				this._removePieceFromPieces(subStep.piece);
 				this.triggerEvent('kill', subStep.piece);
 			}
 
-			if (subStep.from !== 0 && subStep.to !== 0 && (!subStep.castling || subStep.piece.hasRank('king')) ) {
+			if (subStep.from !== 0 && subStep.to !== 0 && (!subStep.castling || subStep.piece.rank === 'king') ) {
 				this.softChangeTurn();
 			}
 		}
 	}
 
-	on (eventName, callback) {
+	on(eventName, callback) {
 		if (this._events[eventName] && typeof callback === 'function') {
 			this._events[eventName].push(callback);
 		}
@@ -76,43 +93,37 @@ class Game {
 	}
 
 	getPiecesByColor(color) {
-		return this.pieces.filter(obj => {
-		  return obj.color === color
-		});
+		return this.playerPieces[color];
 	}
 
 	getPlayerPositions(color){
-		const pieces = this.getPiecesByColor(color);
-		return pieces.map(a => a.position);
+		return this.getPiecesByColor(color).map(piece => piece.position);
 	}
 
 	filterPositions(positions) {
 		return positions.filter(pos => {
-			const secondDigit = pos.toString().charAt(1);
-			return pos > 10 && pos < 89 && secondDigit < 9 && secondDigit > 0;
+			const x = pos % 10;
+			return pos > 10 && pos < 89 && x !== 9 && x !== 0;
 		});
 	};
 
 	unblockedPositions(piece, allowedPositions, checking=true) {
 		const unblockedPositions = [];
 
-		if (piece.color === 'white') {
-			var myBlockedPositions    = this.getPlayerPositions('white');
-			var otherBlockedPositions = this.getPlayerPositions('black');
-		}
-		else{
-			var myBlockedPositions    = this.getPlayerPositions('black');
-			var otherBlockedPositions = this.getPlayerPositions('white');
-		}
+		const myColor = piece.color;
+		const otherColor = piece.color === 'white' ? 'black' : 'white';
 
-		if (piece.hasRank('pawn')) {
+		const myBlockedPositions    = this.getPlayerPositions(myColor);
+		const otherBlockedPositions = this.getPlayerPositions(otherColor);
+
+		if (piece.rank === 'pawn') {
 			for (const move of allowedPositions[0]) { //attacking moves
 				if (checking && this.myKingChecked(move)) continue;
 				if (otherBlockedPositions.indexOf(move) !== -1) unblockedPositions.push(move);
 			}
-			const blockedPositions = [...myBlockedPositions, ...otherBlockedPositions];
+
 			for (const move of allowedPositions[1]) { //moving moves
-				if (blockedPositions.indexOf(move) !== -1) {
+				if (myBlockedPositions.indexOf(move) !== -1 || otherBlockedPositions.indexOf(move) !== -1) {
 					break;
 				}
 				else if (checking && this.myKingChecked(move, false)) continue;
@@ -120,7 +131,7 @@ class Game {
 			}
 		}
 		else{
-			allowedPositions.forEach( (allowedPositionsGroup, index) => {
+			allowedPositions.forEach( allowedPositionsGroup => {
 				for (const move of allowedPositionsGroup) {
 					if (myBlockedPositions.indexOf(move) !== -1) {
 						break;
@@ -148,7 +159,7 @@ class Game {
 		if(this.turn === piece.color){
 			this.setClickedPiece(piece);
 
-			let pieceAllowedMoves = piece.getAllowedMoves();
+			let pieceAllowedMoves = getAllowedMoves(piece);
 			if (piece.rank === 'king') {
 				pieceAllowedMoves = this.getCastlingSquares(piece, pieceAllowedMoves);
 			}
@@ -229,7 +240,7 @@ class Game {
 				this.kill(existedPiece);
 			}
 
-			const castling = !existedPiece && piece.hasRank('king') && piece.ableToCastle === true;
+			const castling = !existedPiece && piece.rank === 'king' && piece.ableToCastle === true;
 
 			if (castling) {
 				if (position - prevPosition === 2) {
@@ -238,10 +249,10 @@ class Game {
 				else if (position - prevPosition === -2) {
 					this.castleRook(piece.color + 'Rook1');
 				}
-				piece.changePosition(position, true);
+				changePosition(piece, position, true);
 			}
 			else {
-				piece.changePosition(position);
+				changePosition(piece, position);
 			}
 
 			const move = { from: prevPosition, to: position, piece: piece, castling };
@@ -273,7 +284,7 @@ class Game {
 	}
 
 	kill(piece) {
-		this.pieces.splice(this.pieces.indexOf(piece), 1);
+		this._removePieceFromPieces(piece);
 		this.addToHistory({from: piece.position, to: 0, piece: piece});
 		this.triggerEvent('kill', piece);
 	}
@@ -283,19 +294,17 @@ class Game {
 		const prevPosition = rook.position;
 		const newPosition = rookName.indexOf('Rook2') !== -1 ? rook.position - 2 : rook.position + 3;
 
-		rook.changePosition(newPosition);
+		changePosition(rook, newPosition);
 		const move = {from: prevPosition, to: newPosition, piece: rook, castling: true};
 		this.triggerEvent('pieceMove', move);
 		this.addToHistory(move);
 	}
 
 	promote(pawn) {
-		const queenName = pawn.name.replace('Pawn', 'Queen');
-		this.pieces.splice(this.pieces.indexOf(pawn), 1);
-		const queen = new Queen(pawn.position, queenName);
-		this.pieces.push(queen);
-		this.addToHistory({from: 0, to: queen.position, piece: queen});
-		this.triggerEvent('promotion', queen);
+		pawn.name = pawn.name.replace('Pawn', 'Queen');
+		pawn.rank = 'queen';
+		this.addToHistory({from: 0, to: pawn.position, piece: pawn});
+		this.triggerEvent('promotion', pawn);
 	}
 
 	myKingChecked(pos, kill=true){
@@ -303,17 +312,20 @@ class Game {
 		const originalPosition = piece.position;
 		const otherPiece = this.getPieceByPos(pos);
 		const should_kill_other_piece = kill && otherPiece && otherPiece.rank !== 'king';
-		piece.changePosition(pos);
-		if (should_kill_other_piece) this.pieces.splice(this.pieces.indexOf(otherPiece), 1);
+		changePosition(piece, pos);
+		if (should_kill_other_piece) {
+			this._removePieceFromPieces(otherPiece);
+		}
 		if (this.king_checked(piece.color)) {
-			piece.changePosition(originalPosition);
+			changePosition(piece, originalPosition);
 			if (should_kill_other_piece) {
 				this.pieces.push(otherPiece);
+				this.playerPieces[otherPiece.color].push(otherPiece);
 			}
 			return 1;
 		}
 		else{
-			piece.changePosition(originalPosition);
+			changePosition(piece, originalPosition);
 			if (should_kill_other_piece) this.pieces.push(otherPiece);
 			return 0;
 		}
@@ -323,7 +335,7 @@ class Game {
 		const pieces = this.getPiecesByColor(color);
 		for (const piece of pieces) {
 			this.setClickedPiece(piece);
-			const allowedMoves = this.unblockedPositions(piece, piece.getAllowedMoves(), true);
+			const allowedMoves = this.unblockedPositions(piece, getAllowedMoves(piece), true);
 			if (allowedMoves.length) {
 				this.setClickedPiece(null);
 				return 0;
@@ -340,7 +352,7 @@ class Game {
 		const enemyPieces = this.getPiecesByColor(enemyColor);
 		for (const enemyPiece of enemyPieces) {
 			this.setClickedPiece(enemyPiece);
-			const allowedMoves = this.unblockedPositions(enemyPiece, enemyPiece.getAllowedMoves(), false);
+			const allowedMoves = this.unblockedPositions(enemyPiece, getAllowedMoves(enemyPiece), false);
 			if (allowedMoves.indexOf(king.position) !== -1) {
 				this.setClickedPiece(piece);
 				return 1;

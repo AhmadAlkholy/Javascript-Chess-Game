@@ -78,14 +78,41 @@ const ai = (aiTurn) => {
         return bestPlay;
     }
 
-    return {
-        play: (pieces, callback) => {
+    let play;
+
+    if ( isTestEnv() ) {
+        play = (pieces, callback) => {
             setTimeout( () => {
-                const aiPlay = minimax(pieces, aiTurn);
-                if (typeof callback === 'function') {
+                testFuncTime( () => {
+                    const aiPlay = minimax(pieces, aiTurn);
                     callback(aiPlay);
-                }
+                });
             }, 100);
         }
     }
+    else {
+        play = (pieces, callback) => {
+            setTimeout( () => {
+                const aiPlay = minimax(pieces, aiTurn);
+                callback(aiPlay);
+            }, 100);
+        }
+    }
+
+    return {
+        play
+    }
+}
+
+const isTestEnv = function() {
+    const url = new URL(location.href);
+    const params = new URLSearchParams(url.searchParams);
+    return Boolean(params.get('testing'))
+}
+
+const testFuncTime = func => {
+    const label = 'Timer ' + Date.now();
+    console.time(label);
+    console.log( 'Output:', func() );
+    console.timeLog(label);
 }
