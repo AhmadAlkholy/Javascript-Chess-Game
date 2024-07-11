@@ -30,9 +30,14 @@ class Game {
 		}
 	}
 
-	_removePieceFromPieces(piece) {
+	_removePiece(piece) {
 		this.pieces.splice(this.pieces.indexOf(piece), 1);
 		this.playerPieces[piece.color].splice(this.playerPieces[piece.color].indexOf(piece), 1)
+	}
+
+	_addPiece(piece) {
+		this.pieces.push(piece);
+		this.playerPieces[piece.color].push(piece);
 	}
 
 	saveHistory() {
@@ -58,7 +63,7 @@ class Game {
 			changePosition(subStep.piece, subStep.from);
 			if (subStep.from !== 0) {
 				if (subStep.to === 0) {
-					this.pieces.push(subStep.piece);
+					this._addPiece(subStep.piece);
 				}
 				else if (subStep.castling) {
 					subStep.piece.ableToCastle = true;
@@ -66,7 +71,7 @@ class Game {
 				this.triggerEvent('pieceMove', subStep);
 			}
 			else {
-				this._removePieceFromPieces(subStep.piece);
+				this._removePiece(subStep.piece);
 				this.triggerEvent('kill', subStep.piece);
 			}
 
@@ -284,7 +289,7 @@ class Game {
 	}
 
 	kill(piece) {
-		this._removePieceFromPieces(piece);
+		this._removePiece(piece);
 		this.addToHistory({from: piece.position, to: 0, piece: piece});
 		this.triggerEvent('kill', piece);
 	}
@@ -314,19 +319,20 @@ class Game {
 		const should_kill_other_piece = kill && otherPiece && otherPiece.rank !== 'king';
 		changePosition(piece, pos);
 		if (should_kill_other_piece) {
-			this._removePieceFromPieces(otherPiece);
+			this._removePiece(otherPiece);
 		}
 		if (this.king_checked(piece.color)) {
 			changePosition(piece, originalPosition);
 			if (should_kill_other_piece) {
-				this.pieces.push(otherPiece);
-				this.playerPieces[otherPiece.color].push(otherPiece);
+				this._addPiece(otherPiece);
 			}
 			return 1;
 		}
 		else{
 			changePosition(piece, originalPosition);
-			if (should_kill_other_piece) this.pieces.push(otherPiece);
+			if (should_kill_other_piece) {
+				this._addPiece(otherPiece);
+			}
 			return 0;
 		}
 	}
