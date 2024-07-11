@@ -3,6 +3,7 @@
 <head>
 	<title>Chess</title>
 	<link rel="stylesheet" type="text/css" href="chess.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 
@@ -39,111 +40,114 @@
 </div>
 	
 <br>
-<div style="width:600px;margin:auto;position:relative;">
+	<div class="board-container">
 
-	<div id="board">
-		<div id="final" class="odd">
-			<div id="81" class="square" data-square="8-a"></div>
-			<div id="82" class="square" data-square="8-b"></div>
-			<div id="83" class="square" data-square="8-c"></div>
-			<div id="84" class="square" data-square="8-d"></div>
-			<div id="85" class="square" data-square="8-e"></div>
-			<div id="86" class="square" data-square="8-f"></div>
-			<div id="87" class="square" data-square="8-g"></div>
-			<div id="88" class="square" data-square="8-h"></div>
+		<div id="board">
+			<div id="final" class="odd">
+				<div id="81" class="square" data-square="8-a"></div>
+				<div id="82" class="square" data-square="8-b"></div>
+				<div id="83" class="square" data-square="8-c"></div>
+				<div id="84" class="square" data-square="8-d"></div>
+				<div id="85" class="square" data-square="8-e"></div>
+				<div id="86" class="square" data-square="8-f"></div>
+				<div id="87" class="square" data-square="8-g"></div>
+				<div id="88" class="square" data-square="8-h"></div>
+			</div>
+			<div class="even">
+				<div id="71" class="square" data-square="7-a"></div>
+				<div id="72" class="square" data-square="7-b"></div>
+				<div id="73" class="square" data-square="7-c"></div>
+				<div id="74" class="square" data-square="7-d"></div>
+				<div id="75" class="square" data-square="7-e"></div>
+				<div id="76" class="square" data-square="7-f"></div>
+				<div id="77" class="square" data-square="7-g"></div>
+				<div id="78" class="square" data-square="7-h"></div>
+			</div>
+			<div class="odd">
+				<div id="61" class="square" data-square="6-a"></div>
+				<div id="62" class="square" data-square="6-b"></div>
+				<div id="63" class="square" data-square="6-c"></div>
+				<div id="64" class="square" data-square="6-d"></div>
+				<div id="65" class="square" data-square="6-e"></div>
+				<div id="66" class="square" data-square="6-f"></div>
+				<div id="67" class="square" data-square="6-g"></div>
+				<div id="68" class="square" data-square="6-h"></div>
+			</div>
+			<div class="even">
+				<div id="51" class="square" data-square="5-a"></div>
+				<div id="52" class="square" data-square="5-b"></div>
+				<div id="53" class="square" data-square="5-c"></div>
+				<div id="54" class="square" data-square="5-d"></div>
+				<div id="55" class="square" data-square="5-e"></div>
+				<div id="56" class="square" data-square="5-f"></div>
+				<div id="57" class="square" data-square="5-g"></div>
+				<div id="58" class="square" data-square="5-h"></div>
+			</div>
+			<div class="odd">
+				<div id="41" class="square" data-square="4-a"></div>
+				<div id="42" class="square" data-square="4-b"></div>
+				<div id="43" class="square" data-square="4-c"></div>
+				<div id="44" class="square" data-square="4-d"></div>
+				<div id="45" class="square" data-square="4-e"></div>
+				<div id="46" class="square" data-square="4-f"></div>
+				<div id="47" class="square" data-square="4-g"></div>
+				<div id="48" class="square" data-square="4-h"></div>
+			</div>
+			<div class="even">
+				<div id="31" class="square" data-square="3-a"></div>
+				<div id="32" class="square" data-square="3-b"></div>
+				<div id="33" class="square" data-square="3-c"></div>
+				<div id="34" class="square" data-square="3-d"></div>
+				<div id="35" class="square" data-square="3-e"></div>
+				<div id="36" class="square" data-square="3-f"></div>
+				<div id="37" class="square" data-square="3-g"></div>
+				<div id="38" class="square" data-square="3-h"></div>
+			</div>
+			<div class="odd">
+				<div class="square white" id="21" data-square="2-a"></div>
+				<div class="square white" id="22" data-square="2-b"></div>
+				<div class="square white" id="23" data-square="2-c"></div>
+				<div class="square white" id="24" data-square="2-d"></div>
+				<div class="square white" id="25" data-square="2-e"></div>
+				<div class="square white" id="26" data-square="2-f"></div>
+				<div class="square white" id="27" data-square="2-g"></div>
+				<div class="square white" id="28" data-square="2-h"></div>
+			</div>
+			<div class="even">
+				<div id="11" class="square white" data-square="1-a"></div>
+				<div id="12" class="square white" data-square="1-b"></div>
+				<div id="13" class="square white" data-square="1-c"></div>
+				<div id="14" class="square white" data-square="1-d"></div>
+				<div id="15" class="square white" data-square="1-e"></div>
+				<div id="16" class="square white" data-square="1-f"></div>
+				<div id="17" class="square white" data-square="1-g"></div>
+				<div id="18" class="square white" data-square="1-h"></div>
+			</div>
 		</div>
-		<div class="even">
-			<div id="71" class="square" data-square="7-a"></div>
-			<div id="72" class="square" data-square="7-b"></div>
-			<div id="73" class="square" data-square="7-c"></div>
-			<div id="74" class="square" data-square="7-d"></div>
-			<div id="75" class="square" data-square="7-e"></div>
-			<div id="76" class="square" data-square="7-f"></div>
-			<div id="77" class="square" data-square="7-g"></div>
-			<div id="78" class="square" data-square="7-h"></div>
+
+		<p id="turn">White's Turn</p>
+
+		<div class="semataries">
+			<div id="whiteSematary" class="sematary">
+				<div class="pawn"></div>
+				<div class="knight"></div>
+				<div class="bishop"></div>
+				<div class="rook"></div>
+				<div class="queen"></div>
+			</div>
+	
+			<div id="blackSematary" class="sematary">
+				<div class="pawn"></div>
+				<div class="knight"></div>
+				<div class="bishop"></div>
+				<div class="rook"></div>
+				<div class="queen"></div>
+			</div>
 		</div>
-		<div class="odd">
-			<div id="61" class="square" data-square="6-a"></div>
-			<div id="62" class="square" data-square="6-b"></div>
-			<div id="63" class="square" data-square="6-c"></div>
-			<div id="64" class="square" data-square="6-d"></div>
-			<div id="65" class="square" data-square="6-e"></div>
-			<div id="66" class="square" data-square="6-f"></div>
-			<div id="67" class="square" data-square="6-g"></div>
-			<div id="68" class="square" data-square="6-h"></div>
-		</div>
-		<div class="even">
-			<div id="51" class="square" data-square="5-a"></div>
-			<div id="52" class="square" data-square="5-b"></div>
-			<div id="53" class="square" data-square="5-c"></div>
-			<div id="54" class="square" data-square="5-d"></div>
-			<div id="55" class="square" data-square="5-e"></div>
-			<div id="56" class="square" data-square="5-f"></div>
-			<div id="57" class="square" data-square="5-g"></div>
-			<div id="58" class="square" data-square="5-h"></div>
-		</div>
-		<div class="odd">
-			<div id="41" class="square" data-square="4-a"></div>
-			<div id="42" class="square" data-square="4-b"></div>
-			<div id="43" class="square" data-square="4-c"></div>
-			<div id="44" class="square" data-square="4-d"></div>
-			<div id="45" class="square" data-square="4-e"></div>
-			<div id="46" class="square" data-square="4-f"></div>
-			<div id="47" class="square" data-square="4-g"></div>
-			<div id="48" class="square" data-square="4-h"></div>
-		</div>
-		<div class="even">
-			<div id="31" class="square" data-square="3-a"></div>
-			<div id="32" class="square" data-square="3-b"></div>
-			<div id="33" class="square" data-square="3-c"></div>
-			<div id="34" class="square" data-square="3-d"></div>
-			<div id="35" class="square" data-square="3-e"></div>
-			<div id="36" class="square" data-square="3-f"></div>
-			<div id="37" class="square" data-square="3-g"></div>
-			<div id="38" class="square" data-square="3-h"></div>
-		</div>
-		<div class="odd">
-			<div class="square white" id="21" data-square="2-a"></div>
-			<div class="square white" id="22" data-square="2-b"></div>
-			<div class="square white" id="23" data-square="2-c"></div>
-			<div class="square white" id="24" data-square="2-d"></div>
-			<div class="square white" id="25" data-square="2-e"></div>
-			<div class="square white" id="26" data-square="2-f"></div>
-			<div class="square white" id="27" data-square="2-g"></div>
-			<div class="square white" id="28" data-square="2-h"></div>
-		</div>
-		<div class="even">
-			<div id="11" class="square white" data-square="1-a"></div>
-			<div id="12" class="square white" data-square="1-b"></div>
-			<div id="13" class="square white" data-square="1-c"></div>
-			<div id="14" class="square white" data-square="1-d"></div>
-			<div id="15" class="square white" data-square="1-e"></div>
-			<div id="16" class="square white" data-square="1-f"></div>
-			<div id="17" class="square white" data-square="1-g"></div>
-			<div id="18" class="square white" data-square="1-h"></div>
-		</div>
+
 	</div>
 
-	<div id="sematary">
-		<div id="whiteSematary">
-			<div class="pawn"></div>
-			<div class="knight"></div>
-			<div class="bishop"></div>
-			<div class="rook"></div>
-			<div class="queen"></div>
-		</div>
-		<div id="blackSematary">
-			<div class="pawn"></div>
-			<div class="knight"></div>
-			<div class="bishop"></div>
-			<div class="rook"></div>
-			<div class="queen"></div>
-		</div>
-	</div>
-</div>
-
-<p id="turn">White's Turn</p>
-<div style="position:absolute;left:20px;bottom:20px;">
+<div style="position:absolute;left:15px;bottom:15px;">
 	<button class="flip-board" onclick="boardAnimate()">Flip Board</button>
 </div>
 

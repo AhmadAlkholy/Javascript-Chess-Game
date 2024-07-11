@@ -5,16 +5,35 @@
 body{
 	background: #ddd;
 }
-#board{
+.board-container {
 	width: 600px;
-	height: 600px;
+	max-width: 90%;
+    justify-content: center;
+	margin:auto;
+	position:relative;
+}
+.semataries {
+	width: 100%;
+	margin:auto;
+	display: flex;
+    justify-content: center;
+}
+.sematary {
+	width: 50%;
+}
+#blackSematary {
+	text-align: right;
+}
+#board{
+	aspect-ratio: 1 / 1;
+	margin: auto;
 	border:3px #333 solid;
 }
 #board div div{
 	float: left;
-	width: 75px;
-	height: 75px;
-	box-sizing:border-box;
+    width: calc(100% / 8);
+	aspect-ratio: 1 / 1;
+	box-sizing: border-box;
 	border: #000 solid .01cm;
 }
 
@@ -66,9 +85,10 @@ body{
   }
 
 }
-img{
-	width: 75px;
-	height: 75px; 
+img.piece{
+	width: 100%;
+	height: 100%;
+	float: left;
 }
 .allowed{
 	opacity: .8;
@@ -85,31 +105,14 @@ img{
 	background: radial-gradient(#333,#222 )!important;
 	border:1px solid black !important;
 }
-#sematary img{
+.sematary img {
 	transform: rotateZ(0);
-}
-#whiteSematary{
-	position: absolute;
-    top: 0;
-    left: 610px;
-    width: 180px;
-}
-#blackSematary{
-	position: absolute;
-    top: 0;
-    left: -190px;
-    width: 180px;
+	width: 1.8rem;
+	height: 1.8rem;
 }
 #blackSematary div{
 	overflow-y: auto;
 	margin-bottom: 2px;
-}
-#blackSematary img{
-	float: right;
-}
-#sematary img{
-	width: 60px;
-	height: 60px;
 }
 .scene{
 	position: relative;
