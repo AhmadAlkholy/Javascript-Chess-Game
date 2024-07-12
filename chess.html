@@ -12,10 +12,10 @@
 	<div class="scene-content" style="margin-top: 15vh;">
 		<div style="margin-bottom: 50px;">
 			<h2>Play Against</h2>
-			<input type="radio" name="oponent" id="humanOponent" value="human" onclick="hideColorSelect()" checked>
+			<input type="radio" name="oponent" id="humanOponent" value="human" onchange="changeColorSelect()" checked>
 			<label for="humanOponent">Human</label>
 			&ensp;
-			<input type="radio" name="oponent" id="aiOponent" value="ai" onclick="showColorSelect()">
+			<input type="radio" name="oponent" id="aiOponent" value="ai" onchange="changeColorSelect()">
 			<label for="aiOponent">AI</label>
 		</div>
 		
@@ -224,7 +224,7 @@
 <script type="text/javascript" src="Board.js"></script>
 
 <script type="text/javascript">
-	function boardAnimate(){
+	const boardAnimate = () => {
 		const board = document.getElementById('board');
 		const elements = board.getElementsByClassName('piece');
 		if (board.classList.contains('animate')) {
@@ -244,6 +244,20 @@
 			}
 		}	
 	}
+</script>
+
+<script>
+	const changeColorSelect = () => {
+		const playAgainst = document.querySelector('input[name="oponent"]:checked').value;
+		if (playAgainst === 'ai') {
+			showColorSelect();
+		}
+		else {
+			hideColorSelect();
+		}		
+	}
+
+	changeColorSelect();
 </script>
 
 </body>
