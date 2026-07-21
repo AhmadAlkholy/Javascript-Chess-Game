@@ -10,7 +10,10 @@ const changePosition = (piece, position, castle=false) => {
 	if (piece.rank === 'rook') {
 		piece.ableToCastle = false;
 	}
+}
 
+const tempChangePosition = (piece, position, castle=false) => {
+	piece.position = position;
 }
 
 const getMovesTop = (piece) => {

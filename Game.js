@@ -317,19 +317,19 @@ class Game {
 		const originalPosition = piece.position;
 		const otherPiece = this.getPieceByPos(pos);
 		const should_kill_other_piece = kill && otherPiece && otherPiece.rank !== 'king';
-		changePosition(piece, pos);
+		tempChangePosition(piece, pos);
 		if (should_kill_other_piece) {
 			this._removePiece(otherPiece);
 		}
 		if (this.king_checked(piece.color)) {
-			changePosition(piece, originalPosition);
+			tempChangePosition(piece, originalPosition);
 			if (should_kill_other_piece) {
 				this._addPiece(otherPiece);
 			}
 			return 1;
 		}
 		else{
-			changePosition(piece, originalPosition);
+			tempChangePosition(piece, originalPosition);
 			if (should_kill_other_piece) {
 				this._addPiece(otherPiece);
 			}
