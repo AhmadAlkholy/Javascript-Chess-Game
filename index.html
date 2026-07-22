@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Chess Game</title>
+	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="chess.css">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 	<meta property="og:image" content="img/share.jpeg" />
@@ -12,27 +13,48 @@
 <body>
 
 <div id="startscene" class="scene show">
-	<div class="scene-content" style="margin-top: 15vh;">
-		<div style="margin-bottom: 50px;">
-			<h2>Play Against</h2>
-			<input type="radio" name="oponent" id="humanOponent" value="human" onchange="changeColorSelect()" checked>
-			<label for="humanOponent">Human</label>
-			&ensp;
-			<input type="radio" name="oponent" id="aiOponent" value="ai" onchange="changeColorSelect()">
-			<label for="aiOponent">AI</label>
-		</div>
-		
-		<div class="select-color-container" style="margin-bottom: 50px;display: none;">
-			<h2>Select Your Color</h2>
-			<input type="radio" name="human_color" id="humanColorWhite" value="white" checked>
-			<label for="humanColorWhite">White</label>
-			&ensp;
-			<input type="radio" name="human_color" id="humanColorBlack" value="black">
-			<label for="humanColorBlack">Black</label>
+	<div class="scene-content" style="margin-top: 10vh;">
+		<div class="scene-content-box">
+			
+			<div id="step-opponent">
+				<h2>PLAY AGAINST</h2>
+				<div class="scene-selector">
+					<input type="radio" name="oponent" id="humanOponent" value="human" onchange="changeColorSelect()">
+					<label for="humanOponent" class="option-card blue-card">
+						<div class="icon">👤</div>
+						<span>HUMAN</span>
+					</label>
+
+					<input type="radio" name="oponent" id="aiOponent" value="ai" onchange="changeColorSelect()">
+					<label for="aiOponent" class="option-card purple-card">
+						<div class="icon">🤖</div>
+						<span>AI</span>
+					</label>
+				</div>
+			</div>
+			
+			<div id="step-color" class="select-color-container hidden" style="margin-top: 30px">
+				<h2 style="font-size: 1.8rem; margin-bottom: 25px;">SELECT YOUR COLOR</h2>
+				
+				<div class="scene-selector">
+					<input type="radio" name="human_color" id="humanColorWhite" value="white" checked>
+					<label for="humanColorWhite" class="option-card white-card">
+						<div class="icon">♟</div>
+						<span>WHITE</span>
+					</label>
+
+					<input type="radio" name="human_color" id="humanColorBlack" value="black">
+					<label for="humanColorBlack" class="option-card black-card">
+						<div class="icon">♞</div>
+						<span>BLACK</span>
+					</label>
+				</div>
+			</div>
+
 		</div>
 
 		<div class="start-game-container">
-			<button class="button button-big" onclick="startNewGame()">Start Game</button>
+			<button id="start-game-button" class="button-big" onclick="startNewGame()" disabled>START GAME</button>
 		</div>
 	</div>
 	<div class="overlay"></div>
@@ -253,17 +275,26 @@
 </script>
 
 <script>
+	const enableStartGameButton = () => document.getElementById('start-game-button').disabled = false;
+	const disableStartGameButton = () => document.getElementById('start-game-button').disabled = true;
+
 	const changeColorSelect = () => {
-		const playAgainst = document.querySelector('input[name="oponent"]:checked').value;
+		const playAgainst = document.querySelector('input[name="oponent"]:checked')?.value;
 		if (playAgainst === 'ai') {
 			showColorSelect();
+			disableStartGameButton();
+			document.querySelector('input[type="radio"][name="human_color"]:checked').checked = false;
 		}
 		else {
 			hideColorSelect();
-		}		
+			enableStartGameButton();
+		}
 	}
 
-	changeColorSelect();
+	document.querySelectorAll('input[type="radio"][name="human_color"]')
+		.forEach(radio => {
+			radio.addEventListener("change", enableStartGameButton);
+		});
 </script>
 
 </body>

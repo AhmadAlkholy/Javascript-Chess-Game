@@ -189,78 +189,7 @@ img.piece:hover {
 	gap: 4px;
 }
 
-.scene{
-  width: 100%;
-	position: relative;
-	opacity: 0;
-	display: none;
-	z-index: 100;
-}
 
-.overlay{
-	position: fixed;
-	width: 100%;
-	height: 130vh;
-	background: #000;
-	opacity: .7;
-	z-index: 1;
-}
-
-.scene .scene-content{
-	position: fixed;
-	color: #f0ede0;
-	z-index: 2;
-	width: 100%;
-	text-align: center;
-	font-size: 44px;
-	height: 100vh;
-	text-shadow: 0 4px 18px rgba(0,0,0,0.7);
-	letter-spacing: 0.02em;
-}
-
-.scene-content h2 {
-	  font-weight: 600;
-    margin-bottom: 20px;
-    font-size: 2.8rem;
-    color: #ffffff;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
-    background: #131c36;
-    max-width: 500px;
-    padding: 12px 40px;
-    border-radius: 5px;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    letter-spacing: 1px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-@media screen and (max-width: 600px) {
-	.scene-content h2 {
-		font-size: 2rem;
-	}
-}
-
-.show{
-	display: block !important;
-	animation: showMessage 0.7s ease-out;
-	animation-fill-mode: both;
-}
-
-.hidden {
-	display: none;
-}
-
-@keyframes showMessage { 
-	0% {
-		opacity: 0;
-		transform: translateY(12px);
-	}
-	100%{
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
 
 #turn{
 	text-align: center;
@@ -383,4 +312,268 @@ input[type="radio"]:checked + label {
 #blackSematary .rook::before,
 #blackSematary .queen::before {
 	color: #c0b28a;
+}
+
+.scene {
+	width: 100%;
+	position: relative;
+	opacity: 0;
+	display: none;
+	z-index: 100;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.overlay {
+	position: fixed;
+	width: 100%;
+	height: 130vh;
+	background: #1a1a1a;
+	opacity: .8;
+	z-index: 1;
+}
+
+.scene .scene-content {
+	position: fixed;
+	color: #f0ede0;
+	z-index: 2;
+	width: 100%;
+	text-align: center;
+	font-size: 44px;
+	height: 100vh;
+	text-shadow: 0 4px 18px rgba(0,0,0,0.7);
+	letter-spacing: 0.02em;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.scene-content-box {
+    background: #1a1f24;
+    max-width: 500px;
+    padding: 40px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: none;
+    letter-spacing: 1px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 30px;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+.scene-content h2 {
+    font-weight: 600;
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    color: #ffffff;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+}
+
+.scene-selector {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.scene-selector input[type="radio"] {
+    display: none;
+}
+
+.option-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+    border: 2px solid transparent; 
+    min-height: 100px;
+    box-sizing: border-box;
+}
+
+.option-card .icon {
+    font-size: 2rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    transition: filter 0.2s, color 0.2s;
+}
+
+.option-card span {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.blue-card { 
+    background: #1d4a80; 
+    color: #ffffff;
+}
+.blue-card .icon { filter: brightness(0) invert(1); }
+
+.purple-card { 
+    background: #5e2f7e; 
+    color: #ffffff;
+}
+
+
+.white-card { 
+    background: #3b424a; 
+    color: #a0aec0; 
+}
+.white-card .icon { color: #a0aec0; }
+
+.black-card { 
+    background: #252a30; 
+    color: #718096; 
+}
+.black-card .icon { color: #718096; }
+
+.option-card:hover:not(input:checked + .option-card) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+input[type="radio"]:checked + .option-card {
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+
+input#humanColorWhite:checked + .white-card {
+    background: #f7fafc; 
+    border-color: #ffffff;
+}
+input#humanColorWhite:checked + .white-card .icon,
+input#humanColorWhite:checked + .white-card span {
+    color: #1a202c; 
+}
+
+input#humanColorBlack:checked + .black-card {
+    background: #111111; 
+    border-color: #718096;
+}
+input#humanColorBlack:checked + .black-card .icon,
+input#humanColorBlack:checked + .black-card span {
+    color: #ffffff; 
+}
+
+.start-game-container {
+    margin-top: 10px;
+}
+
+#start-game-button:disabled {
+	opacity: .8;
+	cursor: initial;
+}
+
+.button-big {
+    background: #2b8341;
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding: 18px 60px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(43, 131, 65, 0.4);
+    transition: all 0.2s ease;
+    width: 100%;
+    max-width: 400px;
+}
+
+.button-big:not(button:disabled):hover {
+    background: #349a4e;
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(43, 131, 65, 0.6);
+}
+
+.button-big:active {
+    transform: scale(0.98);
+}
+
+@media screen and (max-width: 600px) {
+	.scene-content h2 {
+		font-size: 1.8rem;
+        margin-bottom: 20px;
+	}
+    .scene-content-box {
+        padding: 25px 20px;
+    }
+    .option-card {
+        padding: 15px 5px;
+        min-height: 80px;
+    }
+    .option-card .icon {
+        font-size: 2.2rem;
+    }
+    .option-card span {
+        font-size: 0.85rem;
+    }
+    .button-big {
+        font-size: 1.2rem;
+        padding: 15px 30px;
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.show {
+	display: block !important;
+	animation: showMessage 0.7s ease-out;
+	animation-fill-mode: both;
+}
+
+@keyframes showMessage { 
+	0% {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	100%{
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.color-fade-in {
+    display: block !important;
+    overflow: hidden; /* Prevents content from spilling during animation */
+    animation: expandSmooth 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+    /* Added extra top-margin during animation to blend in */
+    margin-top: 25px; 
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 25px;
+}
+
+@keyframes expandSmooth {
+    0% {
+        max-height: 0;
+        opacity: 0;
+        transform: translateY(-8px);
+        padding-top: 0;
+        border-top-width: 0;
+        margin-top: 0; /* Removes margin in the beginning to prevent jump */
+    }
+    40% {
+        opacity: 1;
+        border-top-width: 1px;
+    }
+    100% {
+        max-height: 400px; /* Large enough to contain the buttons */
+        opacity: 1;
+        transform: translateY(0);
+        margin-top: 25px; /* Restores margin at the end */
+        padding-top: 25px;
+        border-top-width: 1px;
+    }
 }
